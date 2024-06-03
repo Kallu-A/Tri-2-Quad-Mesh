@@ -32,11 +32,11 @@ jobs:
       run: cmake --build build --parallel
 
     - name: Run executable - delete facet
-      run: build/main_${{ matrix.cfg.os }}
+      run: build/entrypoint_exec{{ matrix.cfg.os }}
 
 
     - name: Create archive
-      run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/main_${{ matrix.cfg.os }} build/lib/*
+      run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec{{ matrix.cfg.os }} build/lib/*
     -
       name: Deploy
       uses: xresloader/upload-to-github-release@v1
