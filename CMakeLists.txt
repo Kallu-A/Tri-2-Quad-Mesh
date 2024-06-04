@@ -45,7 +45,7 @@ endif()
 set_target_properties(
     entrypoint
         PROPERTIES
-            OUTPUT_NAME "entrypoint_exec"
+            OUTPUT_NAME "entrypoint_exec_${OSName}"
 )
 
 # Copy asset files to build directory
