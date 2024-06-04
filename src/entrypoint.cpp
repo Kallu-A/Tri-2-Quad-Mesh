@@ -11,12 +11,12 @@
 
 using namespace UM;
 
-std::string resPath = "res/";
+std::string resPath = "result";
 std::string meshPath = "catorus.geogram";
 
 int main() {
     // Create a directory to save files
-    createDirectory("res");
+    createDirectory("result");
 
     // Get the path to the assets
     std::string path = getAssetPath();
@@ -72,7 +72,7 @@ int main() {
 
 
     // Save mesh with previously created attribute
-    write_by_extension(resPath + meshPath, q, {{{"created_method", pa.ptr}}, {{"treated", fa.ptr}}, {}});
+    write_by_extension(resPath + "/" +  meshPath, q, {{{"created_method", pa.ptr}}, {{"treated", fa.ptr}}, {}});
 
     return 0;
 }
