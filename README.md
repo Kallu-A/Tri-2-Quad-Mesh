@@ -1,4 +1,8 @@
+![build, test](https://github.com/kallu-A/Tri-2-Quad-Mesh/actions/workflows/continuous.yml/badge.svg)
+
 # Triangle to Quadrilateral Mesh Conversion
+![Display](.res/tri-2-quad.png)
+
 
 ## Compile
 ```shell

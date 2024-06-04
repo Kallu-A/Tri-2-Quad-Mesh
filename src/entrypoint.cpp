@@ -12,7 +12,8 @@
 using namespace UM;
 
 std::string resPath = "result";
-std::string meshPath = "catorus.geogram";
+//std::string meshPath = "catorus.geogram";
+std::string meshPath = "quarterdisk_tri.mesh";
 
 int main() {
     // Create a directory to save files
@@ -82,8 +83,7 @@ int main() {
         #define H2 halfEdgeToEdgeMap[f.halfedge(1)]
         #define H3 halfEdgeToEdgeMap[f.halfedge(2)]
         #define F triangle.nverts() + f
-        //std::cout << I << " " << J << " " << K << " " << H1 << " " << H2 << " " << H3 << " " << F << std::endl;
-        std::cout << I << " " << H1 << " " << F << " " << H3 << " " << std::endl;
+        
         // Quad 1
         q.vert(index, 0) = I;
         q.vert(index, 1) = H1;
