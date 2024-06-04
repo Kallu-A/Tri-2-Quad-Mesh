@@ -47,3 +47,6 @@ set_target_properties(
         PROPERTIES
             OUTPUT_NAME "entrypoint_exec"
 )
+
+# Copy asset files to build directory
+configure_file(mesh/catorus.geogram mesh/catorus.geogram COPYONLY)

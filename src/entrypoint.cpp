@@ -34,7 +34,7 @@ int main() {
     // --- SAVE POINT ---
 
     // Save mesh with previously created attribute
-    write_by_extension("catorus_manhattan.geogram", m, {{{"pa", pa.ptr}}, {}, {}});
+    write_by_extension("res/catorus_manhattan.geogram", m, {{{"pa", pa.ptr}}, {}, {}});
 
     // --- FACET ATTR ---
 
@@ -48,7 +48,7 @@ int main() {
     // --- SAVE FACET ---
 
     // Save mesh with previously created attribute
-    write_by_extension("catorus_fa.geogram", m, {{}, {{"fa", fa.ptr}}, {}});
+    write_by_extension("res/catorus_fa.geogram", m, {{}, {{"fa", fa.ptr}}, {}});
 
     // --- CORNER ATTR ---
 
@@ -61,13 +61,13 @@ int main() {
     // --- SAVE ALL ATTRIBUTES ---
 
     // Save mesh with all previously created attributes
-    write_by_extension("catorus_attr.geogram", m, {{{"pa", pa.ptr}}, {{"fa", fa.ptr}}, {}});
+    write_by_extension("res/catorus_attr.geogram", m, {{{"pa", pa.ptr}}, {{"fa", fa.ptr}}, {}});
 
     // --- READ ATTRIBUTES ---
 
     // Load mesh and read attributes
     Triangles m2;
-    SurfaceAttributes attributes = read_by_extension("catorus_attr.geogram", m2);
+    SurfaceAttributes attributes = read_by_extension("res/catorus_attr.geogram", m2);
     // Load "pa" attribute
     PointAttribute<double> pa2("pa", attributes, m2);
     // Load "fa" attribute

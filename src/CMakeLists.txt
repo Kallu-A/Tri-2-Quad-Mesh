@@ -10,5 +10,3 @@ IF (NOT WIN32)
     target_link_libraries(entrypoint m)
 ENDIF()
 
-# Copy asset files to build directory
-#configure_file(assets/catorus.geogram assets/catorus.geogram COPYONLY)

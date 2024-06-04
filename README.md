@@ -9,5 +9,5 @@ cd ..
 ```
 ## Execute
 ```shell
-./build/*_exec
+./build/entrypoint_exec
 ```

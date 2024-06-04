@@ -64,7 +64,7 @@ jobs:
       run: cmake --build build --parallel --config Release
 
     - name: Release run - delete facet
-      run: build/Release/main_win.exe
+      run: build/Release/entrypoint_exec_win.exe
 
 
 
@@ -72,14 +72,14 @@ jobs:
       run: cmake --build build --parallel --config Debug
 
     - name: Debug run - delete facet
-      run: build/Debug/main_win.exe
+      run: build/Debug/entrypoint_exec_win.exe
     -
       name: Deploy
       uses: xresloader/upload-to-github-release@v1
       with:
         tags: true
         draft: false
-        file: build/Release/main_win.exe;
+        file: build/Release/entrypoint_exec_win.exe;
         overwrite: true
         update_latest_release: true
         verbose: true

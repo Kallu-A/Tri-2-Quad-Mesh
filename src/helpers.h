@@ -42,12 +42,12 @@ std::string getExecutablePath() {
 std::string getAssetPath() {
     std::string path = getExecutablePath();
     #if defined(__unix__) || defined(__APPLE__)
-    path += "/assets/";
+    path += "/mesh/";
     #elif defined(_WIN32)
     // Considering user will use VS C++ on Windows,
     // it will generate a target directory according to the config (Release, Debug, ...)
     // We get assets on the top directory
-    path += "\\..\\assets\\";
+    path += "\\..\\mesh\\";
     #endif
     return path;
 }
