@@ -7,6 +7,14 @@ cd build
 make -j
 cd ..
 ```
+
+or for **linux** & **mac**:
+```shell
+./compile.sh
+```
+
+---
+
 ## Execute
 ```shell
 ./build/entrypoint_exec

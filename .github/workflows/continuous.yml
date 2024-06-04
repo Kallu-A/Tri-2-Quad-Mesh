@@ -31,12 +31,12 @@ jobs:
     - name: CMake Build
       run: cmake --build build --parallel
 
-    - name: Run executable - delete facet
-      run: build/entrypoint_exec{{ matrix.cfg.os }}
+    - name: Run executable - entrypoint_exec
+      run: build/entrypoint_exec${{ matrix.cfg.os }}
 
 
     - name: Create archive
-      run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec{{ matrix.cfg.os }} build/lib/*
+      run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec${{ matrix.cfg.os }} build/lib/*
     -
       name: Deploy
       uses: xresloader/upload-to-github-release@v1
@@ -63,7 +63,7 @@ jobs:
     - name: Release build
       run: cmake --build build --parallel --config Release
 
-    - name: Release run - delete facet
+    - name: Release run - entrypoint_exec_win
       run: build/Release/entrypoint_exec_win.exe
 
 
@@ -71,7 +71,7 @@ jobs:
     - name: Debug build
       run: cmake --build build --parallel --config Debug
 
-    - name: Debug run - delete facet
+    - name: Debug run - entrypoint_exec_win
       run: build/Debug/entrypoint_exec_win.exe
     -
       name: Deploy
