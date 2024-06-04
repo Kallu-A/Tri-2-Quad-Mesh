@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 
 #if defined(__unix__) || defined(__APPLE__)
 
@@ -63,4 +64,14 @@ std::string getGraphitePath() {
     path += "\\..\\..\\GraphiteThree\\bin\\win64\\graphite.exe";
     #endif
     return path;
+}
+
+
+void createDirectory(const std::string& dirName) {
+    std::error_code ec;
+    std::filesystem::create_directories(dirName, ec);
+
+    if (ec) {
+        std::cerr << "Error creating directory: " << ec.message() << std::endl;
+    }
 }
