@@ -50,3 +50,5 @@ set_target_properties(
 
 # Copy asset files to build directory
 configure_file(mesh/catorus.geogram mesh/catorus.geogram COPYONLY)
+configure_file(mesh/tri_mesh.geogram mesh/tri_mesh.geogram COPYONLY)
+configure_file(mesh/quarterdisk_tri.mesh mesh/quarterdisk_tri.mesh COPYONLY)

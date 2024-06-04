@@ -5,6 +5,7 @@
  * Halfedges:
 */
 #include "helpers.h"
+#include <map>
 #include <ultimaille/all.h>
 
 
@@ -26,30 +27,52 @@ int main() {
     Quads q;
     // Loading mesh into m
     read_by_extension(path + meshPath, m);
+    m.connect();
 
-    PointAttribute<double> pa(m.points);
-    FacetAttribute<int> fa(m);
-    vec3 firstVertice, secondVertice, newVertice;
-    q.points.create_points(m.nverts() + m.nfacets() * 3);
+    vec3 newVertice, firstVertice, secondVertice, thirdVertice;
+    q.points.create_points(m.nverts() + m.nfacets() * 4);
     q.create_facets(m.nfacets());
-    for (Verti v : m.vertices()) {
-        pa[v] = 1;
+
+    PointAttribute<double> pa(q.points);
+    FacetAttribute<int> fa(q);
+
+    for (auto v : m.iter_vertices()) {
+        q.points[v] = v.pos();
+        pa[v] = 0;
     }
 
+
+
+    std::map<int, int> halfEdgeToEdgeMap;
+
     for (auto f : m.iter_facets() ) {
-        fa[f] = 1;
-        for (int i = 0; i < 3; i++) {
-            pa[f.vertex(i)] += 1;
-            firstVertice = f.vertex(i).pos();
-            secondVertice = f.vertex((i+1) % 3).pos();
-            newVertice = (firstVertice + secondVertice) / 2;
+        //get the edge of the triangle
+
+        firstVertice = (f.vertex(0).pos() + f.vertex(1).pos()) / 2;
+        secondVertice = (f.vertex(1).pos() + f.vertex(2).pos()) / 2;
+        thirdVertice = (f.vertex(2).pos() + f.vertex(0).pos()) / 2;
+
+        newVertice = (firstVertice + secondVertice + thirdVertice) / 3;
+        q.points[m.nverts() + f] = newVertice;
+        pa[m.nverts() + f] = 1;
+    }
+    int index = m.nverts() + m.nfacets();
+    for (auto e: m.iter_halfedges()) {
+        if (halfEdgeToEdgeMap.find(e.opposite()) != halfEdgeToEdgeMap.end()) {
+            halfEdgeToEdgeMap[e] = halfEdgeToEdgeMap[e.opposite()];
+            continue;
         }
+        halfEdgeToEdgeMap[e] = index;
+
+        q.points[index] = (e.to().pos() + e.from().pos()) / 2;
+        pa[index] = 2;
+        index++;
     }
 
 
 
     // Save mesh with previously created attribute
-    write_by_extension(resPath + meshPath, m, {{{"number_time_used", pa.ptr}}, {{"treated", fa.ptr}}, {}});
+    write_by_extension(resPath + meshPath, q, {{{"created_method", pa.ptr}}, {{"treated", fa.ptr}}, {}});
 
     return 0;
 }
