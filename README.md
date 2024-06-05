@@ -2,7 +2,7 @@
 
 # Triangle to Quadrilateral Mesh Conversion
 ![Display](.res/tri-2-quad.png)
-
+Result with `triToQuadSimple.cpp`
 
 ## Compile
 ```shell
@@ -22,4 +22,11 @@ or for **linux** & **mac**:
 ## Execute
 ```shell
 ./build/entrypoint_exec
+
 ``` 
+### usage:
+- **entrypoint_exec** *path_mesh* *number_region*
+- **entrypoint_exec** *path_mesh*
+- **entrypoint_exec** *number_region*
+- **entrypoint_exec**
+- **entrypoint_exec** -h
