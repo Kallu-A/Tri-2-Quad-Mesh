@@ -34,9 +34,14 @@ jobs:
       - name: Run executable - entrypoint_exec
         run: build/entrypoint_exec_${{ matrix.cfg.os }}
 
+      - name: Run executable - triToQuad
+        run: build/triToQuadSimple_exec_${{ matrix.cfg.os }}
 
       - name: Create archive
         run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
+
+      - name: Create archive 2
+        run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/triToQuadSimple_exec_${{ matrix.cfg.os }} build/lib/*
       -
         name: Deploy
         uses: xresloader/upload-to-github-release@v1
@@ -66,13 +71,18 @@ jobs:
       - name: Release run - entrypoint_exec
         run: build/Release/entrypoint_exec_win.exe
 
-
+      - name: Release run - triToQuadSimple_exec
+        run: build/Release/triToQuadSimple_exec_win.exe
 
       - name: Debug build
         run: cmake --build build --parallel --config Debug
 
       - name: Debug run - entrypoint_exec
         run: build/Debug/entrypoint_exec_win.exe
+
+      - name: Debug run - triToQuadSimple_exec
+        run: build/Debug/triToQuadSimple_exec_win.exe
+
       -
         name: Deploy
         uses: xresloader/upload-to-github-release@v1
@@ -80,6 +90,17 @@ jobs:
           tags: true
           draft: false
           file: build/Release/entrypoint_exec_win.exe;
+          overwrite: true
+          update_latest_release: true
+          verbose: true
+
+      -
+        name: Deploy 2
+        uses: xresloader/upload-to-github-release@v1
+        with:
+          tags: true
+          draft: false
+          file: build/Release/triToQuadSimple_exec_win.exe;
           overwrite: true
           update_latest_release: true
           verbose: true

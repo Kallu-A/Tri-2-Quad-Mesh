@@ -22,4 +22,4 @@ or for **linux** & **mac**:
 ## Execute
 ```shell
 ./build/entrypoint_exec
-```
+``` 
