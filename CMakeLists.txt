@@ -25,6 +25,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(ultimaille)
 
+
+FetchContent_Declare(
+  param_parser
+  GIT_REPOSITORY https://github.com/ultimaille/param-parser
+  GIT_TAG        v1.0.0
+)
+FetchContent_MakeAvailable(param_parser)
+
+include_directories(${param_parser_SOURCE_DIR})
+
 # Add ultimaille directory to get ultimaille CMakeLists
 include_directories(${ultimaille_SOURCE_DIR})
 

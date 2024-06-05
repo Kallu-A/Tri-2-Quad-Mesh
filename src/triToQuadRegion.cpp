@@ -3,6 +3,11 @@
 
 using namespace UM;
 
+// Function to calculate the number of region to create for that each region will have a approx percentage of the total number of facets
+int calculateNumberRegion(Triangles &triangle, double percentage) {
+    return triangle.nfacets()  / (triangle.nfacets() * percentage);
+}
+
 // Algorithm to convert a triangle mesh to a quad mesh
 void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, int numberRegion) {
     std::vector<Region> regions;
@@ -24,13 +29,20 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, int numb
         regions.push_back(Region(randomFacet, triangle, i));
     }
 
-    for (int i = 0; i < 2; i++) {
+    bool somethingChange = false;
+    do {
+        somethingChange = false;
         for (auto &region : regions) {
             std::vector<int> adjacentFacet = region.getAdjacentFacet();
             for (auto f : adjacentFacet) {
+                if (fa[f] != 0) {
+                    continue;
+                }
                 fa[f] = region.getIdGroup();
                 region.addFacet(f);
+                somethingChange = true;
             }
         }
-    }
+    } while (somethingChange);
+    
 }

@@ -23,6 +23,10 @@ bool isInputPath = false;
 
 //default number of region
 int numberRegion = 15;
+bool isNumberRegion = false;
+
+double percentage = 0.01;
+
 
 int main(int argc, char* argv[]) {
     // param handling
@@ -42,14 +46,13 @@ int main(int argc, char* argv[]) {
         }
         try {
             numberRegion = std::stoi(arg);
+            isNumberRegion = true;
         } catch (std::exception e){
             meshPath = arg;
             isInputPath = true;
         }
 
     }
-
-    std::cout << "Number of region: " << numberRegion << std::endl;
 
     // Create a directory to save files
     createDirectory("result");
@@ -74,12 +77,16 @@ int main(int argc, char* argv[]) {
         std::cout << "Error: File " << inputPath + meshPath + " not found" << std::endl;
         return 1;
     }
-        
+
+    if (!isNumberRegion)
+        numberRegion = calculateNumberRegion(triangle, 0.1);
+
     triangle.connect();
 
     std::cout << std::endl << "Initial file: " << inputPath + meshPath << std::endl
         << "vertices: " << triangle.nverts()
-        << " facets: " << triangle.nfacets() << std::endl;
+        << " facets: " << triangle.nfacets() << std::endl 
+        << "area cover by region : " << percentage * 100 << " % region: " << numberRegion << std::endl;
 
 
     size_t last_slash = meshPath.find_last_of('/');
