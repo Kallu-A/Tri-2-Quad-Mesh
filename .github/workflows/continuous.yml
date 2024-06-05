@@ -32,7 +32,7 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Run executable - entrypoint_exec
-        run: build/entrypoint_exec_${{ matrix.cfg.os }} mesh/catorus.geogram
+        run: build/entrypoint_exec_${{ matrix.cfg.os }} path=mesh/catorus.geogram
 
       - name: Run executable - triToQuad
         run: build/triToQuadSimple_exec_${{ matrix.cfg.os }}
@@ -69,7 +69,7 @@ jobs:
         run: cmake --build build --parallel --config Release
 
       - name: Release run - entrypoint_exec
-        run: build/Release/entrypoint_exec_win.exe mesh/catorus.geogram
+        run: build/Release/entrypoint_exec_win.exe path=mesh/catorus.geogram
 
       - name: Release run - triToQuadSimple_exec
         run: build/Release/triToQuadSimple_exec_win.exe

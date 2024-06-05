@@ -5,7 +5,7 @@ using namespace UM;
 
 // Function to calculate the number of region to create for that each region will have a approx percentage of the total number of facets
 int calculateNumberRegion(Triangles &triangle, double percentage) {
-    return triangle.nfacets()  / (triangle.nfacets() * percentage);
+    return triangle.nfacets()  /((triangle.nfacets() * percentage));
 }
 
 // Algorithm to convert a triangle mesh to a quad mesh

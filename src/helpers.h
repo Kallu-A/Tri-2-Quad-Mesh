@@ -75,3 +75,7 @@ void createDirectory(const std::string& dirName) {
         std::cerr << "Error creating directory: " << ec.message() << std::endl;
     }
 }
+
+bool is_equal(double a, double b, double epsilon = 1e-9) {
+    return std::abs(a - b) <= epsilon;
+}

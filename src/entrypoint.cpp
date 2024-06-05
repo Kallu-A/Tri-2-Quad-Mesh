@@ -7,6 +7,7 @@
 #include "helpers.h"
 #include <ultimaille/all.h>
 #include "triToQuadRegion.cpp"
+#include <param_parser/param_parser.h>
 
 
 using namespace UM;
@@ -25,33 +26,39 @@ bool isInputPath = false;
 int numberRegion = 15;
 bool isNumberRegion = false;
 
-double percentage = 0.01;
+double percentage = 0.05;
+
 
 
 int main(int argc, char* argv[]) {
-    // param handling
-    if (argc > 3) {
-        std::cout << "Usage: " << argv[0] << " [path_to_mesh] [number_region]" << std::endl;
-        std::cout << "Usage: " << argv[0] << " [path_to_mesh]" << std::endl;
-        std::cout << "Usage: " << argv[0] << " [number_region]" << std::endl;
-        return 1;
-    }
-    for (int i = 1; i < argc; i++) {
-        std::string arg = argv[i];
-        if (arg == "-h" || arg == "--help") {
-            std::cout << "Usage: " << argv[0] << " [path_to_mesh] [number_region]" << std::endl;
-            std::cout << "Usage: " << argv[0] << " [path_to_mesh]" << std::endl;
-            std::cout << "Usage: " << argv[0] << " [number_region]" << std::endl;
-            return 0;
-        }
-        try {
-            numberRegion = std::stoi(arg);
-            isNumberRegion = true;
-        } catch (std::exception e){
-            meshPath = arg;
-            isInputPath = true;
-        }
+    Parameters params;
+    params.add(Parameters::Type::String, "path", "").description("Path to the mest");
+    params.add(Parameters::Type::Int, "n_region", "-414").description("Number of region to create");
+    params.add(Parameters::Type::Double, "p_area", "-0.01").description("Percentage of the area to cover by region");
+    params.init_from_args(argc, argv);
+    
+    std::cout << "Parameters: " << std::string(params["path"]) << " " << int(params["n_region"]) << " " << double(params["p_area"]) << std::endl;
 
+    // param handling
+    if (std::string(params["path"]) != "") {
+        std::string param = params["path"];
+        meshPath = param;
+        isInputPath = true;
+    }
+    if (int(params["n_region"]) != -414) {
+        numberRegion = params["n_region"];
+        isNumberRegion = true;
+        if (numberRegion < 0) {
+            std::cout << "Error: number of region must be positive" << std::endl;
+            return 1;
+        }
+    }
+    if (!is_equal(double(params["p_area"]), -0.01)) {
+        percentage = params["p_area"];
+        if (percentage > 1 || percentage < 0) {
+            std::cout << "Error: percentage must be between 0 and 1" << std::endl;
+            return 1;
+        }
     }
 
     // Create a directory to save files
@@ -79,7 +86,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (!isNumberRegion)
-        numberRegion = calculateNumberRegion(triangle, 0.1);
+        numberRegion = calculateNumberRegion(triangle, percentage);
 
     triangle.connect();
 
