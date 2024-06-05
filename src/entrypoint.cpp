@@ -5,8 +5,8 @@
  * Halfedges:
 */
 #include "helpers.h"
-#include <map>
 #include <ultimaille/all.h>
+#include "triToQuadRegion.cpp"
 
 
 using namespace UM;
@@ -64,7 +64,12 @@ int main(int argc, char* argv[]) {
 
     Triangles triangle;
     Quads quad;
-    read_by_extension(inputPath + meshPath, triangle);
+    if (inputPath == "")
+        read_by_extension(meshPath, triangle);
+    else
+        read_by_extension(inputPath + meshPath, triangle);
+
+
     if (triangle.nverts() == 0) {
         std::cout << "Error: File " << inputPath + meshPath + " not found" << std::endl;
         return 1;
@@ -82,6 +87,7 @@ int main(int argc, char* argv[]) {
         meshPath = meshPath.substr(last_slash + 1);
     }
 
+    process(triangle, quad, numberRegion);
 
     // Save mesh with previously created attribute
     write_by_extension(resPath + "/" +  meshPath, quad, {{}, {}, {}});
@@ -95,7 +101,3 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-// Algorithm to convert a triangle mesh to a quad mesh
-void process(Triangles triangle, Quads quad) {
-
-}
