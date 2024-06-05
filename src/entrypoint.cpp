@@ -87,10 +87,11 @@ int main(int argc, char* argv[]) {
         meshPath = meshPath.substr(last_slash + 1);
     }
 
-    process(triangle, quad, numberRegion);
+    FacetAttribute<int> fa(triangle);
+    process(triangle, quad, fa, numberRegion);
 
     // Save mesh with previously created attribute
-    write_by_extension(resPath + "/" +  meshPath, quad, {{}, {}, {}});
+    write_by_extension(resPath + "/" +  meshPath, triangle, {{}, {{"group_number", fa.ptr}}, {}});
 
 
     std::cout << std::endl << "Result file: " << resPath + "/" +  meshPath << std::endl;
