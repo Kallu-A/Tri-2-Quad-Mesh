@@ -4,13 +4,13 @@ using namespace UM;
 
 class Region {
     public:
-        Region(int beginning, Triangle triangle) {
+        Region(int beginning, Triangles &triangle) {
             region.push_back(beginning);
             triangle = triangle;
         }
 
     private:
-        Triangle triangle;
+        Triangles triangle;
         std::vector<int> region;
 
 };
