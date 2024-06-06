@@ -25,5 +25,5 @@ or for **linux** & **mac**:
 or 
 ./build/entrypoint_exec path=mesh_path n_region=number_region p_area=percent_area_region
 # each parameter can be added when needed you can have only path or path and n_area
-
 ``` 
+All parameters: **gif**, **path**, **n_region**, **p_area**

@@ -3,3 +3,6 @@
 build
 res
 result
+result/region
+animation/*.png
+animation/*gif

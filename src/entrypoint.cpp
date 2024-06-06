@@ -9,7 +9,6 @@
 #include "triToQuadRegion.cpp"
 #include <param_parser/param_parser.h>
 
-
 using namespace UM;
 
 // default save path
@@ -28,11 +27,12 @@ bool isNumberRegion = false;
 
 double percentage = 0.05;
 
-
+bool gifmode = false;
 
 int main(int argc, char* argv[]) {
     Parameters params;
     params.add(Parameters::Type::String, "path", "").description("Path to the mest");
+    params.add(Parameters::Type::Bool, "gif", "false").description("Create a gif of the process");
     params.add(Parameters::Type::Int, "n_region", "-414").description("Number of region to create");
     params.add(Parameters::Type::Double, "p_area", "-0.01").description("Percentage of the area to cover by region");
     params.init_from_args(argc, argv);
@@ -59,6 +59,9 @@ int main(int argc, char* argv[]) {
             std::cout << "Error: percentage must be between 0 and 1" << std::endl;
             return 1;
         }
+    }
+    if (std::string(params["gif"]) == "true") {
+        gifmode = true;
     }
 
     // Create a directory to save files
@@ -103,8 +106,11 @@ int main(int argc, char* argv[]) {
 
     FacetAttribute<int> fa(triangle);
     PointAttribute<int> pa(triangle.points);
-    process(triangle, quad, fa, pa, numberRegion);
+    process(triangle, quad, fa, pa, numberRegion, gifmode);
+    if (gifmode) {
+        write_by_extension("result/region/09999.geogram", triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
 
+    }
     // Save mesh with previously created attribute
     write_by_extension(resPath + "/" +  meshPath, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
 

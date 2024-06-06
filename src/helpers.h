@@ -76,6 +76,41 @@ void createDirectory(const std::string& dirName) {
     }
 }
 
+void emptyDirectory(const std::string& dirName) {
+    std::error_code ec;
+    std::filesystem::remove_all(dirName, ec);
+
+    if (ec) {
+        std::cerr << "Error emptying directory: " << ec.message() << std::endl;
+    }
+}
+
+void deleteFilesWithExtension(const std::string& dirName, const std::string& ext) {
+    std::error_code ec;
+    for (const auto& entry : std::filesystem::directory_iterator(dirName, ec)) {
+        if (ec) {
+            std::cerr << "Error iterating through directory: " << ec.message() << std::endl;
+            return;
+        }
+        if (entry.is_regular_file() && entry.path().extension() == ext) {
+            std::filesystem::remove(entry.path(), ec);
+            if (ec) {
+                std::cerr << "Error deleting file: " << ec.message() << std::endl;
+            }
+        }
+    }
+}
+
 bool is_equal(double a, double b, double epsilon = 1e-9) {
     return std::abs(a - b) <= epsilon;
+}
+
+std::string convertToNumberId(int number) {
+    std::string name = std::to_string(number);
+
+    // pad the string with leading zeros
+    std::stringstream ss;
+    ss << std::setw(5) << std::setfill('0') << name;
+    return ss.str();
+
 }

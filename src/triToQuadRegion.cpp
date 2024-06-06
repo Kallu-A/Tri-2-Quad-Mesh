@@ -1,7 +1,12 @@
 #include <ultimaille/all.h>
 #include "region.cpp"
 
+
 using namespace UM;
+
+
+// allow to create the file to make the gif
+int gifcounter = 0;
 
 // Function to calculate the number of region to create for that each region will have a approx percentage of the total number of facets
 int calculateNumberRegion(Triangles &triangle, double percentage) {
@@ -9,7 +14,15 @@ int calculateNumberRegion(Triangles &triangle, double percentage) {
 }
 
 // Algorithm to convert a triangle mesh to a quad mesh
-void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, int numberRegion) {
+void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, int numberRegion, bool gifmode = false) {
+    if (gifmode) {
+        createDirectory("result");
+        createDirectory("result/region");
+        emptyDirectory("result/region");
+        deleteFilesWithExtension("result/region", "geogram");
+        deleteFilesWithExtension("animation/", "png");
+        std::cout << "Gif mode activated result stored in result/region" << std::endl;
+    }
     std::vector<Region> regions;
     std::vector<int> regionFacet;
     int randomFacet;
@@ -42,6 +55,17 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
                 region.addFacet(f);
                 somethingChange = true;
             }
+        }
+        if (gifmode) {
+            //save the mesh
+            createDirectory("result");
+            createDirectory("result/region");
+
+            std::string path = "result/region/" + convertToNumberId(gifcounter) + ".geogram";
+            write_by_extension(path, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
+
+            gifcounter++;
+
         }
     } while (somethingChange);
 
