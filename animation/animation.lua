@@ -28,5 +28,5 @@
     obj.visible = false
   end
   --os.execute("convert -resize 40% -set delay 1x100 -loop 0 /home/ely/gitlab/ultimailleBunin/animation/*.png /home/ely/gitlab/ultimailleBunin/animation/1output.gif")
- os.execute("convert -delay 15 -loop 1 $(\\ls "..path.."*.png | head -n) "..path.."output.gif")
+ os.execute("convert -delay 15 -loop 1 $(\\ls "..path.."*.png) "..path.."output.gif")
 
