@@ -16,7 +16,7 @@ using namespace UM;
 std::string resPath = "result";
 
 // default mesh
-std::string meshPath = "quarterdisk_tri.mesh";
+std::string meshPath = "catorus.geogram";
 
 // default path for the input 
 std::string inputPath = "";
@@ -102,11 +102,11 @@ int main(int argc, char* argv[]) {
     }
 
     FacetAttribute<int> fa(triangle);
-    process(triangle, quad, fa, numberRegion);
+    PointAttribute<int> pa(triangle.points);
+    process(triangle, quad, fa, pa, numberRegion);
 
     // Save mesh with previously created attribute
-    write_by_extension(resPath + "/" +  meshPath, triangle, {{}, {{"group_number", fa.ptr}}, {}});
-
+    write_by_extension(resPath + "/" +  meshPath, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
 
     std::cout << std::endl << "Result file: " << resPath + "/" +  meshPath << std::endl;
     //std::cout << "Number of vertices: " << q.nverts();

@@ -9,7 +9,7 @@ int calculateNumberRegion(Triangles &triangle, double percentage) {
 }
 
 // Algorithm to convert a triangle mesh to a quad mesh
-void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, int numberRegion) {
+void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, int numberRegion) {
     std::vector<Region> regions;
     std::vector<int> regionFacet;
     int randomFacet;
@@ -44,5 +44,12 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, int numb
             }
         }
     } while (somethingChange);
+
+    for (auto &region : regions) {
+        std::vector<int> border = region.getBorder();
+        for (auto f : border) {
+            pa[f] = 1;
+        }
+    }
     
 }

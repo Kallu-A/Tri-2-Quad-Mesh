@@ -22,11 +22,8 @@ or for **linux** & **mac**:
 ## Execute
 ```shell
 ./build/entrypoint_exec
+or 
+./build/entrypoint_exec path=mesh_path n_region=number_region p_area=percent_area_region
+# each parameter can be added when needed you can have only path or path and n_area
 
 ``` 
-### usage:
-- **entrypoint_exec** *path_mesh* *number_region*
-- **entrypoint_exec** *path_mesh*
-- **entrypoint_exec** *number_region*
-- **entrypoint_exec**
-- **entrypoint_exec** -h
