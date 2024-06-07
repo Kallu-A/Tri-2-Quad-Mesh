@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     params.add(Parameters::Type::Int, "n_region", "-414").description("Number of region to create");
     params.add(Parameters::Type::Double, "p_area", "-0.01").description("Percentage of the area to cover by region");
     params.init_from_args(argc, argv);
-    
+
     std::cout << "Parameters: " << std::string(params["path"]) << " " << int(params["n_region"]) << " " << double(params["p_area"]) << std::endl;
 
     // param handling
@@ -106,13 +106,15 @@ int main(int argc, char* argv[]) {
 
     FacetAttribute<int> fa(triangle);
     PointAttribute<int> pa(triangle.points);
-    process(triangle, quad, fa, pa, numberRegion, gifmode);
-    if (gifmode) {
-        write_by_extension("result/region/09999.geogram", triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
+    CornerAttribute<int> ea(triangle, -1);
 
-    }
+    process(triangle, quad, fa, pa, ea, numberRegion, gifmode);
+    if (gifmode) {
+        write_by_extension("result/region/09999.geogram", triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
+
+    }   
     // Save mesh with previously created attribute
-    write_by_extension(resPath + "/" +  meshPath, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
+    write_by_extension(resPath + "/" +  meshPath, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
 
     std::cout << std::endl << "Result file: " << resPath + "/" +  meshPath << std::endl;
     //std::cout << "Number of vertices: " << q.nverts();

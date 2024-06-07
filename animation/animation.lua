@@ -12,9 +12,9 @@
   -- obj.shader.mesh_style='true; 0 0 0 1; 1'
   --  obj.query_interface('OGF::MeshGrobAttributesCommands').compute_vertices_id()
   obj.shader.attribute = 'facets.group_number'
-  if (i == scene_graph.nb_children-1) then
-    obj.shader.attribute = 'vertices.border_group'
-  end
+  --if (i == scene_graph.nb_children-1) then
+  --  obj.shader.attribute = 'vertices.border_group'
+  --end
   obj.shader.colormap = 'rainbow'
   obj.shader.autorange()
 

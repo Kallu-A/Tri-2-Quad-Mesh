@@ -1,6 +1,13 @@
 #include <ultimaille/all.h>
 
 using namespace UM;
+/**
+ * @brief Class to represent a region of the mesh
+ * region is a vector of facet id
+ * triangle is the mesh
+ * idGroup is the id of the group
+*/
+
 
 class Region {
     public:
@@ -18,11 +25,11 @@ class Region {
             auto v1 = f.halfedge(1).opposite().facet();
             auto v2 = f.halfedge(2).opposite().facet();
 
-            if (std::find(region.begin(), region.end(), v0) == region.end() && std::find(adjacentFacet.begin(), adjacentFacet.end(), v0) == adjacentFacet.end())
+            if (!isElementInVector(region, v0) && !isElementInVector(adjacentFacet, v0))
                 adjacentFacet.push_back(v0);
-            if (std::find(region.begin(), region.end(), v1) == region.end() && std::find(adjacentFacet.begin(), adjacentFacet.end(), v1) == adjacentFacet.end())
+            if (!isElementInVector(region, v1) && !isElementInVector(adjacentFacet, v1))
                 adjacentFacet.push_back(v1);
-            if (std::find(region.begin(), region.end(), v2) == region.end() && std::find(adjacentFacet.begin(), adjacentFacet.end(), v2) == adjacentFacet.end())
+            if (!isElementInVector(region, v2) && !isElementInVector(adjacentFacet, v2))
                 adjacentFacet.push_back(v2);
     
         }
@@ -34,28 +41,31 @@ class Region {
     }
 
     // return a vector of vertices that are on the border of the region
-    std::vector<int> getBorder() const {
+    std::vector<int> getBorder(CornerAttribute<int> &ca) const {
         std::vector<int> border;
 
         for (int i = 0; i < region.size(); i++) {
             //parcours les 3 voisin de chaque facet et ajouté au vecteur si il n'est pas déjà dans la region ou dans les voisins de la region
             auto f = Surface::Facet(triangle, region[i]);
 
-            auto v0 = f.halfedge(0).opposite();
-            auto v1 = f.halfedge(1).opposite();
-            auto v2 = f.halfedge(2).opposite();
+            auto v0 = f.halfedge(0);
+            auto v1 = f.halfedge(1);
+            auto v2 = f.halfedge(2);
 
-            if (std::find(region.begin(), region.end(), v0.facet()) == region.end()) {
+            if (isElementInVector(region, v0.opposite().facet())) {
                 border.push_back(v0.from());
                 border.push_back(v0.to());
+                ca[v0] = 1;
             }
-            if (std::find(region.begin(), region.end(), v1.facet()) == region.end()) {
+            if (isElementInVector(region, v1.opposite().facet())) {
                 border.push_back(v1.from());
                 border.push_back(v1.to());
+                ca[v1] = 1;
             }
-            if (std::find(region.begin(), region.end(), v2.facet()) == region.end()) {
+            if (isElementInVector(region, v2.opposite().facet())) {
                 border.push_back(v2.from());
                 border.push_back(v2.to());
+                ca[v2] = 1;
             }
         }
         return border;

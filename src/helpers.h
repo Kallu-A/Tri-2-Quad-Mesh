@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <filesystem>
 
 #if defined(__unix__) || defined(__APPLE__)
@@ -113,4 +114,8 @@ std::string convertToNumberId(int number) {
     ss << std::setw(5) << std::setfill('0') << name;
     return ss.str();
 
+}
+
+bool isElementInVector(const std::vector<int>& vec, int element) {
+    return (std::find(vec.begin(), vec.end(), element) != vec.end());
 }
