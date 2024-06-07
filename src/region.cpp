@@ -52,20 +52,20 @@ class Region {
             auto v1 = f.halfedge(1);
             auto v2 = f.halfedge(2);
 
-            if (isElementInVector(region, v0.opposite().facet())) {
+            if (!isElementInVector(region, v0.opposite().facet())) {
                 border.push_back(v0.from());
                 border.push_back(v0.to());
-                ca[v0] = 1;
+                ca[v0] = idGroup;
             }
-            if (isElementInVector(region, v1.opposite().facet())) {
+            if (!isElementInVector(region, v1.opposite().facet())) {
                 border.push_back(v1.from());
                 border.push_back(v1.to());
-                ca[v1] = 1;
+                ca[v1] = idGroup;
             }
-            if (isElementInVector(region, v2.opposite().facet())) {
+            if (!isElementInVector(region, v2.opposite().facet())) {
                 border.push_back(v2.from());
                 border.push_back(v2.to());
-                ca[v2] = 1;
+                ca[v2] = idGroup;
             }
         }
         return border;

@@ -45,7 +45,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         std::cout << "Number of region is too high, not enough Facet" << std::endl;
         exit(1);
     }
-    for (int i = 0; i < numberRegion; i++) {
+    for (int i = 1; i <= numberRegion; i++) {
         do {
             randomFacet = rand() % maxFacet;
         } while ((isElementInVector(regionFacet, randomFacet)));

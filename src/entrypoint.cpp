@@ -107,6 +107,9 @@ int main(int argc, char* argv[]) {
     FacetAttribute<int> fa(triangle);
     PointAttribute<int> pa(triangle.points);
     CornerAttribute<int> ea(triangle, -1);
+    for (int i = 0; i < triangle.ncorners(); i++) {
+        ea[i] = -1;
+    }
 
     process(triangle, quad, fa, pa, ea, numberRegion, gifmode);
     if (gifmode) {
