@@ -27,8 +27,6 @@ void calculateVertices(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa
 }
 
 
-
-
 // Algorithm to convert a triangle mesh to a quad mesh
 void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, int numberRegion, bool gifmode = false) {
     if (gifmode) {
@@ -87,7 +85,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     } while (somethingChange);
     borderOrientation borderOrientation;
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
-
+    borderOrientation.calculateIntersectionBorder(triangle, quad, fa, pa, ca, regions, gifmode);
     for (auto &region : regions) {
         calculateVertices(triangle, quad, fa, pa, ca, region, gifmode);
     }

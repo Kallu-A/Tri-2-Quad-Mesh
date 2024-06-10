@@ -22,6 +22,27 @@ class borderOrientation {
         return keys;
     }  
 
+    void calculateIntersectionBorder(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, std::vector<Region> &regions, bool gifmode = false) {
+        std::cout << isElementInString("1-2-3-4", 4, 2) << std::endl;
+        std::cout << isElementInString("1-2-3-4", 2, 4) << std::endl;
+
+        std::cout << isElementInString("1-3-4", 4, 2) << std::endl;
+        std::cout << isElementInString("1-3-4", 2, 4) << std::endl;
+
+        std::cout << isElementInString("1-2-3", 4, 2) << std::endl;
+        std::cout << isElementInString("1-2-3", 2, 4) << std::endl;
+        
+        std::cout << isElementInString("1-4-3-2", 4, 2) << std::endl;
+        std::cout << isElementInString("1-4-3-2", 2, 4) << std::endl;
+
+        std::cout << isElementInString("1-42-32-12", 2, 4) << std::endl;
+        std::cout << isElementInString("1-44-23-42", 2, 4) << std::endl;
+        std::cout << isElementInString("14-43-23-42", 2, 4) << std::endl;
+        std::cout << isElementInString("8-2-3-4", 2, 4) << std::endl;
+        std::cout << isElementInString("1-2-3-4", 1, 8) << std::endl;
+        std::cout << isElementInString("6-2-5-4", 5, 6) << std::endl;
+    }
+
     // Function to classify border in region
     void calculateBorder(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, std::vector<Region> &regions, bool gifmode = false) {
     
@@ -47,6 +68,7 @@ class borderOrientation {
 
     private:
         std::unordered_map<std::string, std::set<int>>  mapBorder;
+        std::unordered_map<std::string, std::set<int>>  intersectMapBorder;
 
         // Function to generate a key name for the map of border
     // The advantage of this function is that it will always generate the same key for the same pair of vertices
@@ -55,6 +77,14 @@ class borderOrientation {
             std::swap(v0, v1);
         return std::to_string(v0) + "-" + std::to_string(v1);
     }
+
+    // Helper function to check if two int are in the the string id
+    static bool isElementInString(const std::string& str, int element1, int element2) {
+        std::regex pattern("\\b" + std::to_string(element1) + "\\b");
+        std::regex pattern2("\\b" + std::to_string(element2) + "\\b");
+        return (std::regex_search(str, pattern) && std::regex_search(str, pattern2));
+    }
+
 
     // Helper function to extract two integers from a string
     static std::vector<int> extractIntsFromString(const std::string& str) {
