@@ -74,6 +74,8 @@ int main(int argc, char* argv[]) {
         inputPath = "";
 
 
+    //Start timer 
+    auto start = std::chrono::high_resolution_clock::now();
 
     Triangles triangle;
     Quads quad;
@@ -123,6 +125,10 @@ int main(int argc, char* argv[]) {
     //std::cout << "Number of vertices: " << q.nverts();
     //std::cout << "Number of facets: " << q.nfacets() << std::endl;
 
+    //End timer
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    std::cout << "Time taken: " << duration.count() << " miliseconds" << std::endl;
 
     return 0;
 }
