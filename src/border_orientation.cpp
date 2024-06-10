@@ -23,24 +23,7 @@ class borderOrientation {
     }  
 
     void calculateIntersectionBorder(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, std::vector<Region> &regions, bool gifmode = false) {
-        std::cout << isElementInString("1-2-3-4", 4, 2) << std::endl;
-        std::cout << isElementInString("1-2-3-4", 2, 4) << std::endl;
 
-        std::cout << isElementInString("1-3-4", 4, 2) << std::endl;
-        std::cout << isElementInString("1-3-4", 2, 4) << std::endl;
-
-        std::cout << isElementInString("1-2-3", 4, 2) << std::endl;
-        std::cout << isElementInString("1-2-3", 2, 4) << std::endl;
-        
-        std::cout << isElementInString("1-4-3-2", 4, 2) << std::endl;
-        std::cout << isElementInString("1-4-3-2", 2, 4) << std::endl;
-
-        std::cout << isElementInString("1-42-32-12", 2, 4) << std::endl;
-        std::cout << isElementInString("1-44-23-42", 2, 4) << std::endl;
-        std::cout << isElementInString("14-43-23-42", 2, 4) << std::endl;
-        std::cout << isElementInString("8-2-3-4", 2, 4) << std::endl;
-        std::cout << isElementInString("1-2-3-4", 1, 8) << std::endl;
-        std::cout << isElementInString("6-2-5-4", 5, 6) << std::endl;
     }
 
     // Function to classify border in region
@@ -83,6 +66,19 @@ class borderOrientation {
         std::regex pattern("\\b" + std::to_string(element1) + "\\b");
         std::regex pattern2("\\b" + std::to_string(element2) + "\\b");
         return (std::regex_search(str, pattern) && std::regex_search(str, pattern2));
+    }
+
+    // Helper function to generate a key name for the intersection map
+    static std::string generatorKeyNameList(std::vector<int> list) {
+        std::string key = "";
+        std::sort(list.begin(), list.end());
+        for (int i = 0; i < list.size(); i++) {
+            key += std::to_string(list[i]);
+            if (i != list.size() - 1) {
+                key += "-";
+            }
+        }
+        return key;
     }
 
 
