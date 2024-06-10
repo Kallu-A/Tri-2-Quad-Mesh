@@ -1,14 +1,13 @@
 #include <ultimaille/all.h>
 
 using namespace UM;
+
 /**
  * @brief Class to represent a region of the mesh
  * region is a vector of facet id
  * triangle is the mesh
  * idGroup is the id of the group
 */
-
-
 class Region {
     public:
         Region(int beginning, Triangles &triangle, int idGroup) : region{beginning}, triangle{triangle}, idGroup{idGroup} {}
@@ -41,7 +40,7 @@ class Region {
     }
 
     // return a vector of vertices that are on the border of the region
-    std::vector<int> getBorder(CornerAttribute<int> &ca) const {
+    std::vector<int> getBorderVertice(CornerAttribute<int> &ca) const {
         std::vector<int> border;
 
         for (int i = 0; i < region.size(); i++) {
@@ -69,6 +68,33 @@ class Region {
             }
         }
         return border;
+    }
+
+    std::vector<int> getBorderHalfEdge(CornerAttribute<int> &ca) const {
+        std::vector<int> border;
+
+        for (int i = 0; i < region.size(); i++) {
+            //parcours les 3 voisin de chaque facet et ajouté au vecteur si il n'est pas déjà dans la region ou dans les voisins de la region
+            auto f = Surface::Facet(triangle, region[i]);
+
+            auto v0 = f.halfedge(0);
+            auto v1 = f.halfedge(1);
+            auto v2 = f.halfedge(2);
+
+            if (!isElementInVector(region, v0.opposite().facet())) {
+                border.push_back(v0);
+                ca[v0] = idGroup;
+            }
+            if (!isElementInVector(region, v1.opposite().facet())) {
+                border.push_back(v1);
+                ca[v1] = idGroup;
+            }
+            if (!isElementInVector(region, v2.opposite().facet())) {
+                border.push_back(v2);
+                ca[v2] = idGroup;
+            }
+            }
+            return border;
     }
 
     int getIdGroup() const {
