@@ -131,6 +131,8 @@ int main(int argc, char* argv[]) {
     write_by_extension(resPath + "/" + pathQuad, quad, {{}, {}, {}});
     std::cout << std::endl << "Result file: " << resPath + "/" +  pathTri << std::endl;
     std::cout << std::endl << "Result file: " << resPath + "/" +  pathQuad << std::endl;
+
+    std::cout << "Quad Mesh data: number of vertices: " << quad.nverts() << " number of facets: " << quad.nfacets() << std::endl << std::endl;
     //std::cout << "Number of vertices: " << q.nverts();
     //std::cout << "Number of facets: " << q.nfacets() << std::endl;
 

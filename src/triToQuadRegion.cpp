@@ -13,6 +13,9 @@ int gifcounter = 0;
 // index for the intersect part of the points
 int intersectIndex = 0;
 
+// index for the border part of the points
+int borderIndex = 0;
+
 // Function to calculate the number of region to create for that each region will have a approx percentage of the total number of facets
 int calculateNumberRegion(Triangles &triangle, double percentage) {
     return triangle.nfacets()  /((triangle.nfacets() * percentage));
@@ -29,7 +32,6 @@ Region region, borderOrientation &borderOrientation, std::map<std::string, int> 
     middleVertice = middleVertice * (1.0 / border.size());
     std::vector<std::string> keysBorder = borderOrientation.getAllKeyFromGroup(region.getIdGroup());
     
-    // TODO A OPTIMISER LA PERFORMANCE 
     std::vector<std::string> keysIntersect = borderOrientation.getAllKeyIntersectFromGroup(region.getIdGroup());
     
     int intersectNumber = borderOrientation.getMapIntersectBorder().size();
@@ -40,6 +42,21 @@ Region region, borderOrientation &borderOrientation, std::map<std::string, int> 
             idVerticeFromKey[key] = intersectIndex;
             quad.points[intersectIndex] = Surface::Vertex(triangle, borderOrientation.getMapIntersectBorder()[key]).pos();
             intersectIndex++;
+        }
+    }
+    for (auto key: keysBorder) {
+        if(idVerticeFromKey.find(key) == idVerticeFromKey.end()) {
+            idVerticeFromKey[key] = borderIndex;
+            auto borderVertices = borderOrientation.getMapBorder()[key];
+            middleVertice = UM::vec3(0, 0, 0);
+            for (auto f : borderVertices) {
+                auto vertice = Surface::Vertex(triangle, f);
+                middleVertice += vertice.pos();
+            }
+            middleVertice = middleVertice * (1.0 / borderVertices.size());
+            
+            quad.points[borderIndex] = middleVertice;
+            borderIndex++;
         }
     }
 
@@ -108,7 +125,8 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     borderOrientation.calculateIntersectionBorder(triangle, quad, fa, pa, ca, regions, gifmode);
     std::map<std::string, int> idVerticeFromKey = std::map<std::string, int>();
     intersectIndex = regions.size();
-    quad.points.create_points(numberRegion + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
+    borderIndex = intersectIndex + borderOrientation.getMapIntersectBorder().size();
+    quad.points.create_points(regions.size() + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
     for (auto &region : regions) {
         calculateVertices(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, gifmode);
     }

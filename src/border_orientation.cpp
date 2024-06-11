@@ -73,7 +73,8 @@ class borderOrientation {
                 std::string key = generateKeyName(idGroup, fa[f.opposite().facet()]);
                 
                 auto key_it = mapBorder.emplace(key, std::set<int>()).first;
-                key_it->second.insert(fId);
+                key_it->second.insert(f.from());
+                key_it->second.insert(f.to());
                 //pa[f.from()] = idGroup + fa[f.opposite().facet()];
                 //pa[f.to()] = idGroup + fa[f.opposite().facet()];
             }
