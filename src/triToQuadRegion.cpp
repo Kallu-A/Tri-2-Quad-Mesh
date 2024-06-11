@@ -10,19 +10,39 @@ using namespace UM;
 // allow to create the file to make the gif
 int gifcounter = 0;
 
+// index for the intersect part of the points
+int intersectIndex = 0;
+
 // Function to calculate the number of region to create for that each region will have a approx percentage of the total number of facets
 int calculateNumberRegion(Triangles &triangle, double percentage) {
     return triangle.nfacets()  /((triangle.nfacets() * percentage));
 }
 
-void calculateVertices(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, Region region, bool gifmode = false) {
-   // auto middle = std::vector;
-    std::vector<int> border = region.getBorderHalfEdge(ca);
-    std::vector<int> vertices = region.getRegion();
-    std::vector<int> middleVertice;
-    /*for (auto f : vertices) {
-        middleVertice = f;
-    }*/
+void calculateVertices(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, 
+Region region, borderOrientation &borderOrientation, std::map<std::string, int> &idVerticeFromKey, bool gifmode = false) {
+    std::vector<int> border = region.getBorderVertice(ca);
+    UM::vec3 middleVertice = UM::vec3(0, 0, 0);
+    for (auto f : border) {
+        auto vertice = Surface::Vertex(triangle, f);
+        middleVertice += vertice.pos();
+    }
+    middleVertice = middleVertice * (1.0 / border.size());
+    std::vector<std::string> keysBorder = borderOrientation.getAllKeyFromGroup(region.getIdGroup());
+    
+    // TODO A OPTIMISER LA PERFORMANCE 
+    std::vector<std::string> keysIntersect = borderOrientation.getAllKeyIntersectFromGroup(region.getIdGroup());
+    
+    int intersectNumber = borderOrientation.getMapIntersectBorder().size();
+    
+    quad.points[region.getIdGroup() - 1] = middleVertice;
+    for (auto key: keysIntersect) {
+        if(idVerticeFromKey.find(key) == idVerticeFromKey.end()) {
+            idVerticeFromKey[key] = intersectIndex;
+            quad.points[intersectIndex] = Surface::Vertex(triangle, borderOrientation.getMapIntersectBorder()[key]).pos();
+            intersectIndex++;
+        }
+    }
+
 
 }
 
@@ -77,7 +97,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
             createDirectory("result/region");
 
             std::string path = "result/region/" + convertToNumberId(gifcounter) + ".geogram";
-            write_by_extension(path, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
+            write_by_extension(path, triangle, {{{"border_inters", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
 
             gifcounter++;
 
@@ -86,8 +106,11 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     borderOrientation borderOrientation;
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
     borderOrientation.calculateIntersectionBorder(triangle, quad, fa, pa, ca, regions, gifmode);
+    std::map<std::string, int> idVerticeFromKey = std::map<std::string, int>();
+    intersectIndex = regions.size();
+    quad.points.create_points(numberRegion + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
     for (auto &region : regions) {
-        calculateVertices(triangle, quad, fa, pa, ca, region, gifmode);
+        calculateVertices(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, gifmode);
     }
     
 }

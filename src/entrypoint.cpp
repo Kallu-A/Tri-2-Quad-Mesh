@@ -118,10 +118,20 @@ int main(int argc, char* argv[]) {
         write_by_extension("result/region/09999.geogram", triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
 
     }   
-    // Save mesh with previously created attribute
-    write_by_extension(resPath + "/" +  meshPath, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
 
-    std::cout << std::endl << "Result file: " << resPath + "/" +  meshPath << std::endl;
+    // --- FILE SAVING ---
+
+
+    std::filesystem::path fs_path(meshPath);
+    std::string base_name = fs_path.stem().string();
+    std::string extension = fs_path.extension().string();
+    std::string pathTri = (fs_path.parent_path() / std::string(base_name + "_tri" + extension)).string();
+    std::string pathQuad = (fs_path.parent_path() / std::string(base_name + "_quad" + extension)).string();
+    // Save mesh with previously created attribute
+    write_by_extension(resPath + "/" + pathTri, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
+    write_by_extension(resPath + "/" + pathQuad, quad, {{}, {}, {}});
+    std::cout << std::endl << "Result file: " << resPath + "/" +  pathTri << std::endl;
+    std::cout << std::endl << "Result file: " << resPath + "/" +  pathQuad << std::endl;
     //std::cout << "Number of vertices: " << q.nverts();
     //std::cout << "Number of facets: " << q.nfacets() << std::endl;
 
