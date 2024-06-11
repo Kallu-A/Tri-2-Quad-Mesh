@@ -23,9 +23,10 @@ class borderOrientation {
 
     std::vector<std::string> getAllKeyIntersectFromGroup(int group) const {
         std::vector<std::string> keys;
+
         for (auto key : intersectMapBorder) {
 
-            if (isElementInString(key.first, group, group)) {
+            if (isElementInString(key.first, group)) {
                 keys.push_back(key.first);
             }
         }
@@ -102,11 +103,36 @@ class borderOrientation {
         return std::to_string(v0) + "-" + std::to_string(v1);
     }
 
-    // Helper function to check if two int are in the the string id
-    static bool isElementInString(const std::string& str, int element1, int element2) {
-        std::regex pattern("\\b" + std::to_string(element1) + "\\b");
-        std::regex pattern2("\\b" + std::to_string(element2) + "\\b");
-        return (std::regex_search(str, pattern) && std::regex_search(str, pattern2));
+    // Helper function to check if a int is in the the string id
+    static bool isElementInString(const std::string& str, int element) {
+        std::string num_str = std::to_string(element);
+
+        // Check if num_str is at the beginning of the string
+        if (str.substr(0, num_str.length()) == num_str) {
+            if (str.length() == num_str.length() || str[num_str.length()] == '-') {
+            return true;
+            }
+        }
+
+        // Check if num_str is at the end of the string
+        if (str.substr(str.length() - num_str.length()) == num_str) {
+            if (str.length() == num_str.length() || str[str.length() - num_str.length() - 1] == '-') {
+            return true;
+            }
+        }
+
+        // Check if num_str is in the middle of the string
+        size_t pos = str.find(num_str);
+        while (pos != std::string::npos) {
+            if (pos == 0 || str[pos - 1] == '-') {
+            if (str.length() == pos + num_str.length() || str[pos + num_str.length()] == '-') {
+                return true;
+            }
+            }
+            pos = str.find(num_str, pos + 1);
+        }
+
+        return false;
     }
 
     // Helper function to generate a key name for the intersection map

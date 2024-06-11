@@ -73,7 +73,6 @@ int main(int argc, char* argv[]) {
     else 
         inputPath = "";
 
-
     //Start timer 
     auto start = std::chrono::high_resolution_clock::now();
 
