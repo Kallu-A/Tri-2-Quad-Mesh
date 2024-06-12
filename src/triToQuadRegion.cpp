@@ -29,11 +29,12 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         Region region, borderOrientation &borderOrientation, std::map<std::string, int> &idVerticeFromKey, FacetAttribute<int> &faQuad, bool gifmode = false) {
     std::vector<int> border = region.getBorderVertice(ca);
     UM::vec3 middleVertice = UM::vec3(0, 0, 0);
-    for (auto f : border) {
+    auto middleVerticesList = region.getAllVerticeRegion();
+    for (auto f : middleVerticesList) {
         auto vertice = Surface::Vertex(triangle, f);
         middleVertice += vertice.pos();
     }
-    middleVertice = middleVertice * (1.0 / border.size());
+    middleVertice = middleVertice * (1.0 / middleVerticesList.size());
     std::vector<std::string> keysBorder = borderOrientation.getAllKeyFromGroup(region.getIdGroup());
     
     std::vector<std::string> keysIntersect = borderOrientation.getAllKeyIntersectFromGroup(region.getIdGroup());

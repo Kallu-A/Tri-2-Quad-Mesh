@@ -1,4 +1,5 @@
 #include <ultimaille/all.h>
+#include <set>
 
 using namespace UM;
 
@@ -11,6 +12,17 @@ using namespace UM;
 class Region {
     public:
         Region(int beginning, Triangles &triangle, int idGroup) : region{beginning}, triangle{triangle}, idGroup{idGroup} {}
+
+    std::set<int> getAllVerticeRegion() const {
+        std::set<int> numbers;
+        for (int i = 0; i < region.size(); i++) {
+            auto f = Surface::Facet(triangle, region[i]);
+            for (int j = 0; j < 3; j++) {
+                numbers.insert(f.vertex(j));
+            }
+        }
+        return numbers; 
+    }
 
     std::vector<int> getAdjacentFacet() const {
         std::vector<int> adjacentFacet;
