@@ -17,13 +17,16 @@ int intersectIndex = 0;
 // index for the border part of the points
 int borderIndex = 0;
 
+// index for the facet when creating the quad
+int indexIdFacet = 0;
+
 // Function to calculate the number of region to create for that each region will have a approx percentage of the total number of facets
 int calculateNumberRegion(Triangles &triangle, double percentage) {
     return triangle.nfacets()  /((triangle.nfacets() * percentage));
 }
 
-void calculateVertices(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, 
-        Region region, borderOrientation &borderOrientation, std::map<std::string, int> &idVerticeFromKey, bool gifmode = false) {
+void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, 
+        Region region, borderOrientation &borderOrientation, std::map<std::string, int> &idVerticeFromKey, FacetAttribute<int> &faQuad, bool gifmode = false) {
     std::vector<int> border = region.getBorderVertice(ca);
     UM::vec3 middleVertice = UM::vec3(0, 0, 0);
     for (auto f : border) {
@@ -61,12 +64,66 @@ void calculateVertices(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa
         }
     }
 
+    // Link the vertices to create the quad
+    
+    int idMiddle = region.getIdGroup() - 1;
+    for (auto intersect : keysIntersect) {
+        auto verticeIntersect = idVerticeFromKey[intersect];
+
+        auto verticesBorder = getAllVerticeFromIntersectKey(intersect, region.getIdGroup());
+        std::vector<std::string> border = getAllKeyContainNumbers(keysBorder, verticesBorder);
+        if (border.size() != 2) {
+            if (border.size() == 1) {
+                std::cout << "Error: not enough border" << std::endl;
+                std::cout << border[0] << std::endl;
+                std::cout << "intersect: " << intersect << std::endl;
+                std::cout << "region: " << region.getIdGroup() << std::endl;
+
+                exit(1);
+            }
+            /*std::cout << "Error: border size is not 2" << std::endl;
+            std::cout << "border size: " << border.size() << std::endl;
+            std::cout << "intersect: " << intersect << std::endl;
+            std::cout << "region: " << region.getIdGroup() << std::endl;
+            for (auto b : border) {
+                std::cout << b << std::endl;
+            }
+            exit(1);*/
+            // Try to rectify by taking out the vertice the most far away from the middle vertice
+            auto middleVerticeVector = quad.points[idMiddle];
+            while(border.size() != 2) {
+                double maxDistance = 0;
+                int idMax = 0;
+                for (int i = 0; i < verticesBorder.size(); i++) {
+                    auto vertice = Surface::Vertex(triangle, verticesBorder[i]);
+                    double distance = (middleVerticeVector - vertice.pos()).norm();
+                    if (distance > maxDistance) {
+                        maxDistance = distance;
+                        idMax = i;
+                    }
+                }
+                border.erase(border.begin() + idMax);
+            }
+
+        }
+        
+        quad.create_facets(1);
+        int idBorder1 = idVerticeFromKey[border[0]];
+        int idBorder2 = idVerticeFromKey[border[1]];
+        quad.vert(indexIdFacet, 0) = idMiddle;
+        quad.vert(indexIdFacet, 1) = idBorder1;
+        quad.vert(indexIdFacet, 2) = verticeIntersect;
+        quad.vert(indexIdFacet, 3) = idBorder2;
+        faQuad[indexIdFacet] = region.getIdGroup();
+        indexIdFacet++;
+    }
+
 
 }
 
 
 // Algorithm to convert a triangle mesh to a quad mesh
-void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, int numberRegion, bool gifmode = false) {
+void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, int numberRegion, FacetAttribute<int> &faQuad, bool gifmode = false ) {
     if (gifmode) {
         createDirectory("result");
         createDirectory("result/region");
@@ -129,7 +186,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     borderIndex = intersectIndex + borderOrientation.getMapIntersectBorder().size();
     quad.points.create_points(regions.size() + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
     for (auto &region : regions) {
-        calculateVertices(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, gifmode);
+        transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
     }
     
 }

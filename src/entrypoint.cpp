@@ -108,11 +108,12 @@ int main(int argc, char* argv[]) {
     FacetAttribute<int> fa(triangle);
     PointAttribute<int> pa(triangle.points);
     CornerAttribute<int> ea(triangle, -1);
+    FacetAttribute<int> faQuad(quad);
     for (int i = 0; i < triangle.ncorners(); i++) {
         ea[i] = -1;
     }
 
-    process(triangle, quad, fa, pa, ea, numberRegion, gifmode);
+    process(triangle, quad, fa, pa, ea, numberRegion, faQuad, gifmode);
     if (gifmode) {
         write_by_extension("result/region/09999.geogram", triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
 
@@ -128,7 +129,7 @@ int main(int argc, char* argv[]) {
     std::string pathQuad = (fs_path.parent_path() / std::string(base_name + "_quad" + extension)).string();
     // Save mesh with previously created attribute
     write_by_extension(resPath + "/" + pathTri, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
-    write_by_extension(resPath + "/" + pathQuad, quad, {{}, {}, {}});
+    write_by_extension(resPath + "/" + pathQuad, quad, {{}, {{"intial_region", faQuad.ptr}}, {}});
     std::cout << std::endl << "Result file: " << resPath + "/" +  pathTri << std::endl;
     std::cout << std::endl << "Result file: " << resPath + "/" +  pathQuad << std::endl;
 
