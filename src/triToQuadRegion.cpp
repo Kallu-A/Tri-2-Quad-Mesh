@@ -1,8 +1,9 @@
 #include <ultimaille/all.h>
 #include "region.cpp"
-#include "border_orientation.cpp"
+#include "borderOrientation.cpp"
 #include <set>
-
+#include <map>
+#include <string>
 
 using namespace UM;
 
@@ -22,7 +23,7 @@ int calculateNumberRegion(Triangles &triangle, double percentage) {
 }
 
 void calculateVertices(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, 
-Region region, borderOrientation &borderOrientation, std::map<std::string, int> &idVerticeFromKey, bool gifmode = false) {
+        Region region, borderOrientation &borderOrientation, std::map<std::string, int> &idVerticeFromKey, bool gifmode = false) {
     std::vector<int> border = region.getBorderVertice(ca);
     UM::vec3 middleVertice = UM::vec3(0, 0, 0);
     for (auto f : border) {
