@@ -99,7 +99,11 @@ class borderOrientation {
             std::vector<int> borderHalfEdge = region.getBorderHalfEdge(ca);
             for (auto fId : borderHalfEdge) {
                 auto f = Surface::Halfedge(triangle, fId);
-                std::string key = generateKeyName(idGroup, fa[f.opposite().facet()]);
+                 std::string key;
+                if (f.opposite() == -1) 
+                   key = generateKeyName(idGroup, borderOut);
+                else
+                    key = generateKeyName(idGroup, fa[f.opposite().facet()]);
                 
                 auto key_it = mapBorder.emplace(key, std::set<int>()).first;
                 key_it->second.insert(f.from());
