@@ -1,5 +1,7 @@
+#include "utils/normalCalculator.h"
 #include <ultimaille/all.h>
 #include <set>
+
 
 using namespace UM;
 
@@ -50,6 +52,17 @@ class Region {
     
         }
         return adjacentFacet;
+    }
+
+    vec3 normalOfRegion() {
+        vec3 normal;
+        for (int i = 0; i < region.size(); i++) {
+            auto f = Surface::Facet(triangle, region[i]);
+
+            
+            normal = normal + calculateNormalTriangle(f.vertex(0).pos(), f.vertex(1).pos(), f.vertex(2).pos());
+        }
+        return normal.normalized();
     }
 
     std::vector<int> getRegion() const {

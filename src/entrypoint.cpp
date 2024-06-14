@@ -4,7 +4,7 @@
  * Attributes: PointAttribute, FacetAttribute
  * Halfedges:
 */
-#include "helpers.h"
+#include "utils/helpers.h"
 #include <ultimaille/all.h>
 #include "triToQuadRegion.cpp"
 #include <param_parser/param_parser.h>
@@ -128,6 +128,7 @@ int main(int argc, char* argv[]) {
     std::string pathTri = (fs_path.parent_path() / std::string(base_name + "_tri" + extension)).string();
     std::string pathQuad = (fs_path.parent_path() / std::string(base_name + "_quad" + extension)).string();
     // Save mesh with previously created attribute
+
     write_by_extension(resPath + "/" + pathTri, triangle, {{{"border_group", pa.ptr}}, {{"group_number", fa.ptr}}, {{"edge_group", ea.ptr}}});
     write_by_extension(resPath + "/" + pathQuad, quad, {{}, {{"intial_region", faQuad.ptr}}, {}});
     std::cout << std::endl << "Result file: " << resPath + "/" +  pathTri << std::endl;

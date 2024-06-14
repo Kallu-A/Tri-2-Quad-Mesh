@@ -1,8 +1,9 @@
 #include <ultimaille/all.h>
 #include <set>
 #include <string>
-#include "keyHelper.cpp"
 #include <map>
+
+#include "utils/keyHelper.cpp"
 
 using namespace UM;
 
@@ -43,7 +44,7 @@ class borderOrientation {
     std::vector<std::string> getAllKeyFromGroup(int group) const {
         std::vector<std::string> keys;
         for (auto key : mapBorder) {
-            if (isIntinStringBorderOrientationKey(key.first, group)) {
+            if (getAllKeyContainNumbers(key.first, group)) {
                 keys.push_back(key.first);
             }
         }
@@ -64,6 +65,7 @@ class borderOrientation {
     
     // Fill the map with the vertices intersection of the border
     void calculateIntersectionBorder(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, std::vector<Region> &regions, bool gifmode = false) {
+        
         for (auto &region : regions) {
             std::vector<int> borderVertices = region.getBorderVertice(ca);
 
@@ -75,6 +77,9 @@ class borderOrientation {
                 for (auto h : v.iter_halfedges()) {
                     auto f = Surface::Halfedge(triangle, h);
                     regionMeet.insert(fa[f.facet()]);
+                    if (f.opposite() == -1) {
+                        regionMeet.insert(borderOut);
+                    }
                 }
                 if (regionMeet.size() > 2) {
                     listRegionMeet = std::vector<int>(regionMeet.begin(), regionMeet.end());

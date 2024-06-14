@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-// Return all the number from a key except the one in parameter   key "1-5-7-9"
+// Return all the number from a key except the one in parameter   key "1-5-7-9" param 1 return [5, 7, 9]
 std::vector<int> getAllVerticeFromIntersectKey(std::string intersectKey, int intersectId) {
     std::vector<int> numbers;
     std::string num_str = std::to_string(intersectId);
@@ -28,7 +28,9 @@ std::vector<int> getAllVerticeFromIntersectKey(std::string intersectKey, int int
 }
 
 
-// Helper function to check if a int is in the the string id id looking like "1-2-3"
+// Helper function to check if a int is in the the string contain in the key
+// "1-2-5", 4 -> false
+// "1-2-5", 2 -> true
 bool isElementInString(const std::string& str, int element) {
     std::string num_str = std::to_string(element);
 
@@ -61,6 +63,7 @@ bool isElementInString(const std::string& str, int element) {
 }
 
 //Function that return all key that are in the group
+//Example: getAllKeyContainNumbers(["1-2", "2-3", "4-5", "3-5", "1-3"], [2, 4]) -> ["1-2", "2-3, "4-5"]
 std::vector<std::string> getAllKeyContainNumbers(std::vector<std::string> &keys, std::vector<int> &numbers) {
     std::vector<std::string> keysFilter;
 
@@ -75,16 +78,9 @@ std::vector<std::string> getAllKeyContainNumbers(std::vector<std::string> &keys,
     return keysFilter;
 }
 
-// Helper function to check if a int is in the the string id id looking like "1-2"
-bool isIntinStringBorderOrientationKey(const std::string& str, int borderRegion) {
-    int pos1 = str.find('-');
-    if (pos1 == std::string::npos) {
-        throw std::invalid_argument("Invalid string format");
-    }
-
-    int num1 = std::stoi(str.substr(0, pos1));
-    if (num1 == borderRegion )
-        return true;
-    int num2 = std::stoi(str.substr(pos1 + 1));
-    return num2 == borderRegion;
-} 
+//overload of the function getAllKeyContainNumbers to allow  only one int in arg
+bool getAllKeyContainNumbers(const std::string &key, int number) {
+    std::vector<std::string> keys = {key};
+    std::vector<int> numbers = {number};
+    return getAllKeyContainNumbers(keys, numbers).size() == 1;
+}

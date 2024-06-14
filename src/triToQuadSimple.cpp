@@ -4,7 +4,7 @@
  * Attributes: PointAttribute, FacetAttribute
  * Halfedges:
 */
-#include "helpers.h"
+#include "utils/helpers.h"
 #include <map>
 #include <ultimaille/all.h>
 

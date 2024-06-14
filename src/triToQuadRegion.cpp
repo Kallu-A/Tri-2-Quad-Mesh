@@ -1,7 +1,6 @@
 #include <ultimaille/all.h>
 #include "region.cpp"
 #include "borderOrientation.cpp"
-#include "normalCalculator.cpp"
 
 #include <set>
 #include <map>
@@ -35,7 +34,8 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
     
     std::vector<int> border = region.getBorderVertice(ca);
     UM::vec3 middleVertice = UM::vec3(0, 0, 0);
-    auto middleVerticesList = region.getAllVerticeRegion();
+    //auto middleVerticesList = region.getAllVerticeRegion();
+    auto middleVerticesList = border;
     for (auto f : middleVerticesList) {
         auto vertice = Surface::Vertex(triangle, f);
         middleVertice += vertice.pos();
@@ -72,14 +72,10 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
     }
 
     // Link the vertices to create the quad
-    auto facetRefForNormal = Surface::Facet(triangle, region.getRegion()[0]);
-    auto refv0 = Surface::Vertex(triangle, facetRefForNormal.vertex(0)).pos();
-    auto refv1 = Surface::Vertex(triangle, facetRefForNormal.vertex(1)).pos();
-    auto refv2 = Surface::Vertex(triangle, facetRefForNormal.vertex(2)).pos();
-
 
     int idMiddle = region.getIdGroup() - 1;
     for (auto intersect : keysIntersect) {
+
         auto verticeIntersect = idVerticeFromKey[intersect];
 
         auto verticesBorder = getAllVerticeFromIntersectKey(intersect, region.getIdGroup());
@@ -117,6 +113,8 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         quad.create_facets(1);
         int idBorder1 = idVerticeFromKey[border[0]];
         int idBorder2 = idVerticeFromKey[border[1]];
+        
+
         quad.vert(indexIdFacet, 0) = idMiddle;
         quad.vert(indexIdFacet, 1) = idBorder1;
         quad.vert(indexIdFacet, 2) = verticeIntersect;
@@ -124,19 +122,37 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         faQuad[indexIdFacet] = region.getIdGroup();
         Surface::Facet newFacet(quad, indexIdFacet);
         
+        int iHalfEdge = 0;
+        const double tolerance = 1e-3;
+        Surface::Facet facetRefForNormal = Surface::Facet(triangle, 0);
+        for (auto vertexRef : Surface::Vertex(triangle, borderOrientation.getMapIntersectBorder()[intersect]).iter_halfedges() ) {
+            auto f = Surface::Halfedge(triangle, vertexRef);
+            if (fa[f.facet()] == region.getIdGroup()) {
+                facetRefForNormal = Surface::Facet(triangle, f.facet());
+                break;
+            }
+        }
+ 
+        auto refv0 = Surface::Vertex(triangle, facetRefForNormal.vertex(0)).pos();
+        auto refv1 = Surface::Vertex(triangle, facetRefForNormal.vertex(1)).pos();
+        auto refv2 = Surface::Vertex(triangle, facetRefForNormal.vertex(2)).pos();
+
+
         // Calcul the norm to verify if the quad is in the right direction
         auto v0 = Surface::Vertex(quad, idMiddle).pos();
         auto v1 = Surface::Vertex(quad, idBorder1).pos();
         auto v2 = Surface::Vertex(quad, verticeIntersect).pos();
         auto v3 = Surface::Vertex(quad, idBorder2).pos();
         auto normal = calculateNormalQuad(v0, v1, v2, v3);
-        if (normal * calculateNormalTriangle(refv0, refv1, refv2) <= 0) {
+        //if ((normal * calculateNormalTriangle(refv0, refv1, refv2)) < tolerance) {
+        if ((normal * region.normalOfRegion()) < tolerance) {
+        
             countReverse++;
             quad.vert(indexIdFacet, 1) = idBorder2;
             quad.vert(indexIdFacet, 3) = idBorder1;
             faQuad[indexIdFacet] = -region.getIdGroup();
         }
-
+        
         indexIdFacet++;
     }
 
