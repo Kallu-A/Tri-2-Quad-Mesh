@@ -1,6 +1,7 @@
 #include <ultimaille/all.h>
 #include "region.cpp"
 #include "borderOrientation.cpp"
+#include "utils/cleanDirection.h"
 
 #include <set>
 #include <map>
@@ -32,6 +33,7 @@ int calculateNumberRegion(Triangles &triangle, double percentage) {
 void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, 
         Region region, borderOrientation &borderOrientation, std::map<std::string, int> &idVerticeFromKey, FacetAttribute<int> &faQuad, bool gifmode = false) {
     
+    // --- Caclcul the middle vertice of the region
     std::vector<int> border = region.getBorderVertice(ca);
     UM::vec3 middleVertice = UM::vec3(0, 0, 0);
     //auto middleVerticesList = region.getAllVerticeRegion();
@@ -41,12 +43,16 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         middleVertice += vertice.pos();
     }
     middleVertice = middleVertice * (1.0 / middleVerticesList.size());
+    // ---
+
+ 
     std::vector<std::string> keysBorder = borderOrientation.getAllKeyFromGroup(region.getIdGroup());
     
     std::vector<std::string> keysIntersect = borderOrientation.getAllKeyIntersectFromGroup(region.getIdGroup());
     
     int intersectNumber = borderOrientation.getMapIntersectBorder().size();
-    
+
+    // add all interesect vertices to the new vertices    
     quad.points[region.getIdGroup() - 1] = middleVertice;
     for (auto key: keysIntersect) {
         if(idVerticeFromKey.find(key) == idVerticeFromKey.end()) {
@@ -55,6 +61,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
             intersectIndex++;
         }
     }
+    // create new vertices for each border
     for (auto key: keysBorder) {
         if(idVerticeFromKey.find(key) == idVerticeFromKey.end()) {
             idVerticeFromKey[key] = borderIndex;
@@ -136,7 +143,6 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         auto refv0 = Surface::Vertex(triangle, facetRefForNormal.vertex(0)).pos();
         auto refv1 = Surface::Vertex(triangle, facetRefForNormal.vertex(1)).pos();
         auto refv2 = Surface::Vertex(triangle, facetRefForNormal.vertex(2)).pos();
-
 
         // Calcul the norm to verify if the quad is in the right direction
         auto v0 = Surface::Vertex(quad, idMiddle).pos();
@@ -227,6 +233,8 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
     }
     std::cout << "Number of facet reversed: " << countReverse << std::endl;
+    
+    cleanDirection(quad);
     
 }
 

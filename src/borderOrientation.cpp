@@ -32,6 +32,7 @@ class borderOrientation {
                 key += "-";
             }
         }
+
         return key;
     }
 
@@ -71,7 +72,7 @@ class borderOrientation {
 
             for (int i = 0; i < borderVertices.size(); i++) {
                 std::set<int> regionMeet = std::set<int>();
-                std::vector<int> listRegionMeet = std::vector<int>();
+
                 regionMeet.insert(region.getIdGroup());
                 auto v = Surface::Vertex(triangle, borderVertices[i]);
                 for (auto h : v.iter_halfedges()) {
@@ -82,6 +83,7 @@ class borderOrientation {
                     }
                 }
                 if (regionMeet.size() > 2) {
+                    std::vector<int> listRegionMeet = std::vector<int>();
                     listRegionMeet = std::vector<int>(regionMeet.begin(), regionMeet.end());
                     std::string key = generatorKeyNameList(listRegionMeet);
                     intersectMapBorder[key] = borderVertices[i];
