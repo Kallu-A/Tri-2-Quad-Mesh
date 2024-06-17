@@ -121,3 +121,9 @@ std::string convertToNumberId(int number) {
 bool isElementInVector(const std::vector<int>& vec, int element) {
     return (std::find(vec.begin(), vec.end(), element) != vec.end());
 }
+
+std::string generateKey(int v0, int v1) {
+    if (v0 > v1)
+        std::swap(v0, v1);
+    return std::to_string(v0) + "-" + std::to_string(v1);
+}

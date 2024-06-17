@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 
+#include "intersectData.cpp"
 #include "utils/keyHelper.cpp"
 
 using namespace UM;
@@ -87,6 +88,7 @@ class borderOrientation {
                     listRegionMeet = std::vector<int>(regionMeet.begin(), regionMeet.end());
                     std::string key = generatorKeyNameList(listRegionMeet);
                     intersectMapBorder[key] = borderVertices[i];
+                    fillIntersect(key, borderVertices[i], triangle, fa);
                 }
             }
         }

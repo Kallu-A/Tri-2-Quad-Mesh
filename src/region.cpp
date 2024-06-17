@@ -135,11 +135,10 @@ class Region {
         region.push_back(f);
     }
 
-
-
     private:
         Triangles &triangle;
         std::vector<int> region;
         int idGroup;
+
 
 };

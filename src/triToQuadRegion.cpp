@@ -121,6 +121,15 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         int idBorder1 = idVerticeFromKey[border[0]];
         int idBorder2 = idVerticeFromKey[border[1]];
         
+        //get the data from the intersectdatafolder to now which orientation to do 
+        auto modeidBorder1  = getModeFromKey(intersect, border[0], std::to_string(region.getIdGroup()));
+        int idGroup = region.getIdGroup();
+        if (modeidBorder1 == Mode::OUT) {
+            int temp = idBorder1;
+            idBorder1 = idBorder2;
+            idBorder2 = temp;
+        }
+
 
         quad.vert(indexIdFacet, 0) = idMiddle;
         quad.vert(indexIdFacet, 1) = idBorder1;
@@ -140,7 +149,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
             }
         }
  
-        auto refv0 = Surface::Vertex(triangle, facetRefForNormal.vertex(0)).pos();
+        /* auto refv0 = Surface::Vertex(triangle, facetRefForNormal.vertex(0)).pos();
         auto refv1 = Surface::Vertex(triangle, facetRefForNormal.vertex(1)).pos();
         auto refv2 = Surface::Vertex(triangle, facetRefForNormal.vertex(2)).pos();
 
@@ -157,7 +166,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
             quad.vert(indexIdFacet, 1) = idBorder2;
             quad.vert(indexIdFacet, 3) = idBorder1;
             faQuad[indexIdFacet] = -region.getIdGroup();
-        }
+        }*/
         
         indexIdFacet++;
     }
@@ -234,7 +243,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     }
     std::cout << "Number of facet reversed: " << countReverse << std::endl;
     
-    cleanDirection(quad);
+    //cleanDirection(quad);
     
 }
 
