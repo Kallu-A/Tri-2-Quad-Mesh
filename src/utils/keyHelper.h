@@ -2,7 +2,6 @@
 #include <set>
 #include <string>
 #include <map>
-#include <string>
 
 // Return all the number from a key except the one in parameter   key "1-5-7-9" param 1 return [5, 7, 9]
 std::vector<int> getAllVerticeFromIntersectKey(std::string intersectKey, int intersectId) {

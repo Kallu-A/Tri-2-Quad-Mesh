@@ -4,7 +4,6 @@
 #include <map>
 
 #include "intersectData.cpp"
-#include "utils/keyHelper.cpp"
 
 using namespace UM;
 

@@ -93,9 +93,19 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
                 std::cout << "border size: " << border.size() << std::endl;
                 std::cout << "intersect: " << intersect << std::endl;
                 std::cout << "region: " << region.getIdGroup() << std::endl;
-                for (auto b : border) {
-                    std::cout << b << std::endl;
+                std::cout << "verticesBorder: ";
+                for (auto b : verticesBorder) {
+                    std::cout << b << ", ";
                 }
+                std::cout << std::endl << "border: ";
+                for (auto b : border) {
+                    std::cout << b <<  ", ";
+                }
+                std::cout << std::endl<< "keysBorder: ";
+                for (auto b : keysBorder) {
+                    std::cout << b <<  ", ";
+                }
+                std::cout << std::endl;
                 exit(1);
             }
            
@@ -149,6 +159,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
             }
         }
  
+        // LEGACY CODE
         /* auto refv0 = Surface::Vertex(triangle, facetRefForNormal.vertex(0)).pos();
         auto refv1 = Surface::Vertex(triangle, facetRefForNormal.vertex(1)).pos();
         auto refv2 = Surface::Vertex(triangle, facetRefForNormal.vertex(2)).pos();
