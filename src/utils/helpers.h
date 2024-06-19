@@ -1,3 +1,6 @@
+#ifndef HELPER_H
+#define HELPER_H
+
 #include <iostream>
 #include <vector>
 #include <filesystem>
@@ -127,3 +130,6 @@ std::string generateKey(int v0, int v1) {
         std::swap(v0, v1);
     return std::to_string(v0) + "-" + std::to_string(v1);
 }
+
+
+#endif // HELPER_H

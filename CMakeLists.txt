@@ -40,15 +40,12 @@ include_directories(${ultimaille_SOURCE_DIR})
 
 # Add executable binary
 add_executable(entrypoint src/entrypoint.cpp)
-add_executable(triToQuadSimple src/triToQuadSimple.cpp)
 
 # Link binary with ultimaille / param-parser
 target_link_libraries(entrypoint  ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
-target_link_libraries(triToQuadSimple  ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 
 IF (NOT WIN32)
 	target_link_libraries(entrypoint m)
-  target_link_libraries(triToQuadSimple m)
 ENDIF()
 
 if (NOT DEFINED OSName)
@@ -61,11 +58,6 @@ set_target_properties(
             OUTPUT_NAME "entrypoint_exec_${OSName}"
 )
 
-set_target_properties(
-  triToQuadSimple
-        PROPERTIES
-            OUTPUT_NAME "triToQuadSimple_exec_${OSName}"
-)
 
 
 # Copy asset files to build directory

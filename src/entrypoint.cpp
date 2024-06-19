@@ -55,6 +55,7 @@ int main(int argc, char* argv[]) {
     }
     if (!is_equal(double(params["p_area"]), -0.01)) {
         percentage = params["p_area"];
+        isNumberRegion = true;
         if (percentage > 1 || percentage < 0) {
             std::cout << "Error: percentage must be between 0 and 1" << std::endl;
             return 1;
@@ -89,15 +90,16 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (!isNumberRegion)
+    if (!isNumberRegion) {
         numberRegion = calculateNumberRegion(triangle, percentage);
+        numberRegion = -1;
+    }
 
     triangle.connect();
 
     std::cout << std::endl << "Initial file: " << inputPath + meshPath << std::endl
         << "vertices: " << triangle.nverts()
-        << " facets: " << triangle.nfacets() << std::endl 
-        << "area cover by region : " << percentage * 100 << " % region: " << numberRegion << std::endl;
+        << " facets: " << triangle.nfacets() << std::endl;
 
 
     size_t last_slash = meshPath.find_last_of('/');
@@ -125,6 +127,9 @@ int main(int argc, char* argv[]) {
     std::filesystem::path fs_path(meshPath);
     std::string base_name = fs_path.stem().string();
     std::string extension = fs_path.extension().string();
+    bool isGeogram = true;
+    if (isGeogram)
+        extension = ".geogram";
     std::string pathTri = (fs_path.parent_path() / std::string(base_name + "_tri" + extension)).string();
     std::string pathQuad = (fs_path.parent_path() / std::string(base_name + "_quad" + extension)).string();
     // Save mesh with previously created attribute

@@ -1,7 +1,9 @@
-#include "utils/normalCalculator.h"
+#ifndef _REGION_H_
+#define _REGION_H_
+
+
 #include <ultimaille/all.h>
 #include <set>
-
 
 using namespace UM;
 
@@ -13,11 +15,12 @@ int borderOut = 0;
  * triangle is the mesh
  * idGroup is the id of the group
 */
+
 class Region {
     public:
         Region(int beginning, Triangles &triangle, int idGroup) : region{beginning}, triangle{triangle}, idGroup{idGroup} {}
 
-    std::set<int> getAllVerticeRegion() const {
+    std::vector<int> getAllVerticeRegion() const {
         std::set<int> numbers;
         for (int i = 0; i < region.size(); i++) {
             auto f = Surface::Facet(triangle, region[i]);
@@ -25,7 +28,7 @@ class Region {
                 numbers.insert(f.vertex(j));
             }
         }
-        return numbers; 
+        return std::vector<int>(numbers.begin(), numbers.end());
     }
 
     std::vector<int> getAdjacentFacet() const {
@@ -52,17 +55,6 @@ class Region {
     
         }
         return adjacentFacet;
-    }
-
-    vec3 normalOfRegion() {
-        vec3 normal;
-        for (int i = 0; i < region.size(); i++) {
-            auto f = Surface::Facet(triangle, region[i]);
-
-            
-            normal = normal + calculateNormalTriangle(f.vertex(0).pos(), f.vertex(1).pos(), f.vertex(2).pos());
-        }
-        return normal.normalized();
     }
 
     std::vector<int> getRegion() const {
@@ -142,3 +134,5 @@ class Region {
 
 
 };
+
+#endif // _REGION_H_

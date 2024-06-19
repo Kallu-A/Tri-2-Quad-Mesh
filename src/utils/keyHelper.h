@@ -1,3 +1,6 @@
+#ifndef KEY_HELPER_H
+#define KEY_HELPER_H
+
 #include <ultimaille/all.h>
 #include <set>
 #include <string>
@@ -83,3 +86,5 @@ bool getAllKeyContainNumbers(const std::string &key, int number) {
     std::vector<int> numbers = {number};
     return getAllKeyContainNumbers(keys, numbers).size() == 1;
 }
+
+#endif // KEY_HELPER_H

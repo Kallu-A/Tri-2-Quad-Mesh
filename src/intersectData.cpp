@@ -68,13 +68,11 @@ void fillIntersect(std::string keyIntersect, int vertices, Triangles &triangle, 
     if (isElementInString(keyIntersect, borderOut) == true) {
         for (auto halfedge: verticesIntersect.iter_halfedges()) {
             if (halfedge.next().next().next().opposite() == -1 ) {
-                std::cout << "Find a border with void  " << halfedge;
                 auto f = Surface::Halfedge(triangle, halfedge);
                 auto region = regionFacet[f.facet()];
                 auto regionOposite = borderOut;
                 
                 std::string key = generateKey(region, regionOposite);
-                std::cout << " KeyIntersect: " << keyIntersect <<"  Key: " << key << " region:  "<< region << " Vertices: "<< f.from()  << "\n";
                 intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(region), Mode::OUT));
                 intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(regionOposite), Mode::IN));
             
