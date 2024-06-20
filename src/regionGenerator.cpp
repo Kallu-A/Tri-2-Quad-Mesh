@@ -59,12 +59,10 @@ void fillDistance(Triangles &triangle, std::vector<int> &cumulDistanceFacet, std
     int distance =  1;
     do {
         adjacentFacet = region.getAdjacentFacet();
-
             for (auto f : adjacentFacet) {
-                if (regionDistance[f] == 0) {
-                    if (cumulDistanceFacet[f] != -1) 
-                        cumulDistanceFacet[f] += distance;
-                        regionDistance[f] = distance;
+                if (regionDistance[f] == 0 && cumulDistanceFacet[f] != -1) {
+                    cumulDistanceFacet[f] += distance;
+                    regionDistance[f] = distance;
                 }
                 region.addFacet(f);
             }

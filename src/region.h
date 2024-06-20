@@ -3,12 +3,13 @@
 
 
 #include <ultimaille/all.h>
-#include <set>
+#include <unordered_set>
+#include "set"
 
 using namespace UM;
 
 int borderOut = 0; 
-
+ 
 /**
  * @brief Class to represent a region of the mesh
  * region is a vector of facet id
@@ -18,7 +19,13 @@ int borderOut = 0;
 
 class Region {
     public:
-        Region(int beginning, Triangles &triangle, int idGroup) : region{beginning}, triangle{triangle}, idGroup{idGroup} {}
+        Region(int beginning, Triangles &triangle, int idGroup) : region{beginning}, triangle{triangle}, idGroup{idGroup} {
+            borderLimit = std::unordered_set<int>();
+            auto face = Surface::Facet(triangle, beginning);
+            borderLimit.insert(face.halfedge(0));
+            borderLimit.insert(face.halfedge(1));
+            borderLimit.insert(face.halfedge(2));
+        }
 
     std::vector<int> getAllVerticeRegion() const {
         std::set<int> numbers;
@@ -31,29 +38,32 @@ class Region {
         return std::vector<int>(numbers.begin(), numbers.end());
     }
 
-    std::vector<int> getAdjacentFacet() const {
+    std::vector<int> getAdjacentFacet() {
         std::vector<int> adjacentFacet;
-        
+        std::unordered_set<int> borderNew;
+        std::set<int> toRemove; //need to do a list of halfedge to remove and can't be removed straight away because of a special case 
 
-        for (int i = 0; i < region.size(); i++) {
-            //parcours les 3 voisin de chaque facet et ajouté au vecteur si il n'est pas déjà dans la region ou dans les voisins de la region
-            auto f = Surface::Facet(triangle, region[i]);
+        for (auto idHalf : borderLimit) {
+            auto half = Surface::Halfedge(triangle, idHalf);
+            if (half.opposite() == -1) {
+                borderNew.insert(idHalf);
+                continue;
+            }
+            auto f = half.opposite().facet();
+            
 
-            auto v0 = f.halfedge(0).opposite().facet();
-            auto v1 = f.halfedge(1).opposite().facet();
-            auto v2 = f.halfedge(2).opposite().facet();
-
-            if (f.halfedge(0).opposite() != -1)
-                if (!isElementInVector(region, v0) && !isElementInVector(adjacentFacet, v0))
-                    adjacentFacet.push_back(v0);
-            if (f.halfedge(1).opposite() != -1)
-                if (!isElementInVector(region, v1) && !isElementInVector(adjacentFacet, v1))
-                    adjacentFacet.push_back(v1);
-            if (f.halfedge(2).opposite() != -1)
-                if (!isElementInVector(region, v2) && !isElementInVector(adjacentFacet, v2))
-                    adjacentFacet.push_back(v2);
+            if (!isElementInVector(region, f) && !isElementInVector(adjacentFacet, f))
+                adjacentFacet.push_back(f);
+                toRemove.insert(idHalf);
+                borderNew.insert(half.opposite().next());
+                borderNew.insert(half.opposite().next().next());
+            
     
         }
+        for (auto idHalf : toRemove) {
+            borderLimit.erase(idHalf);
+        }
+        setBorder(borderNew);
         return adjacentFacet;
     }
 
@@ -119,6 +129,10 @@ class Region {
             return border;
     }
 
+    void setBorder(std::unordered_set<int> border) {
+        this->borderLimit = border;
+    }
+
     int getIdGroup() const {
         return idGroup;
     }
@@ -130,6 +144,8 @@ class Region {
     private:
         Triangles &triangle;
         std::vector<int> region;
+        // Contains the halfedge id of the border
+        std::unordered_set<int> borderLimit;
         int idGroup;
 
 
