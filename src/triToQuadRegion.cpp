@@ -1,8 +1,10 @@
 #include <ultimaille/all.h>
+
 #include "region.h"
 #include "borderOrientation.cpp"
-#include "regionGenerator.cpp"  
+#include "region_generator/dijkstra.cpp"  
 #include "utils/helpers.h"
+#include "region_generator/poisson_disk_sampling.cpp"
 
 #include <set>
 #include <map>
@@ -184,7 +186,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         generateNRegionRandom(numberRegion, triangle, fa, pa, regions, regionFacet, gifmode);
     } else {
         std::cout << "Number of region calculated by the program " << std::endl;
-        createRegionDijkstra(triangle, fa, pa, regions);     
+        generate_region(triangle, fa, pa, regions, gifmode);     
     }
     std::cout << "Number of region created: " << regions.size() << std::endl;
     exit(1);

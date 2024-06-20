@@ -1,6 +1,6 @@
 #include <ultimaille/all.h>
-#include  "utils/helpers.h"
-#include "region.h"
+#include  "../utils/helpers.h"
+#include "../region.h"
 
 using namespace UM;
 

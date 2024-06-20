@@ -38,6 +38,15 @@ class Region {
         return std::vector<int>(numbers.begin(), numbers.end());
     }
 
+    bool isDiskTopologic() {
+        int n_vertices = getAllVerticeRegion().size();
+        int n_facet = region.size();
+        int n_edges = getNumberEdge();
+
+        return n_vertices - n_edges + n_facet == 1;
+
+    }
+
     std::vector<int> getAdjacentFacet() {
         std::vector<int> adjacentFacet;
         std::unordered_set<int> borderNew;
@@ -129,6 +138,18 @@ class Region {
             return border;
     }
 
+    int getNumberEdge() {
+        std::set<int> edges;
+        for (int i = 0; i < region.size(); i++) {
+            auto f = Surface::Facet(triangle, region[i]);
+            for (int j = 0; j < 3; j++) {
+                if (edges.find(f.halfedge(j).opposite()) == edges.end())
+                    edges.insert(f.halfedge(j));
+            }
+        }
+        return edges.size();
+    }
+
     void setBorder(std::unordered_set<int> border) {
         this->borderLimit = border;
     }
@@ -143,6 +164,7 @@ class Region {
 
     private:
         Triangles &triangle;
+        // Contains id of the facet
         std::vector<int> region;
         // Contains the halfedge id of the border
         std::unordered_set<int> borderLimit;
