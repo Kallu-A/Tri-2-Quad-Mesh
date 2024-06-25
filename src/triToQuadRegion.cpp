@@ -186,10 +186,11 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         generateNRegionRandom(numberRegion, triangle, fa, pa, regions, regionFacet, gifmode);
     } else {
         std::cout << "Number of region calculated by the program " << std::endl;
-        generate_region(triangle, fa, pa, regions, gifmode);     
+        //generate_region(triangle, fa, pa, regions, gifmode);     
+        createRegionDijkstra(triangle, fa, regions);
     }
     std::cout << "Number of region created: " << regions.size() << std::endl;
-    exit(1);
+    return;
     
 
     borderOrientation borderOrientation;
@@ -204,3 +205,4 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     }
 }
 
+ 

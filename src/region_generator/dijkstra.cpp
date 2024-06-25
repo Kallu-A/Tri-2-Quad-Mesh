@@ -72,25 +72,42 @@ void fillDistance(Triangles &triangle, std::vector<int> &cumulDistanceFacet, std
 }
 
 // fill the mesh of new region with dijkstra to make it homogenous and make sure each region is a disk topologic
-void createRegionDijkstra(Triangles &triangle, FacetAttribute<int> &fa, PointAttribute<int> &pa, std::vector<Region> &regions) {
-    std::vector<int> cumulDistanceFacet = std::vector<int>(triangle.nfacets(), 0);
-    std::vector<std::vector<int>> regionDistance;
-    regions.push_back(Region(0, triangle, 1));
-    //Fill the table of  distance
-    int currentFacet = 0;
-    int i = 0;
-    do {
-        std::cout << "Region " << regions.size() << std::endl;
-        i++;
-        cumulDistanceFacet[currentFacet] = -1;
-        regionDistance.push_back(std::vector<int>(triangle.nfacets(), 0));
-        regionDistance[regions.size() - 1 ][currentFacet] = -1;
-        std::cout << "currentFacet " << currentFacet << std::endl;
-        fillDistance(triangle, cumulDistanceFacet, regionDistance[regions.size() -  1], Region(currentFacet, triangle, regions.size() + 1));
-        std::cout << "distance " << regionDistance[regions.size() - 1][currentFacet] << std::endl;
-        regions.push_back(Region(currentFacet, triangle, regions.size() + 1));
-        //new first facet of new region is the facet the most far away from everyone the index of the biggest value  in cumulDistanceFacet
-        currentFacet =  std::distance(cumulDistanceFacet.begin(), std::max_element(cumulDistanceFacet.begin(), cumulDistanceFacet.end()));
-    } while(i < 200); // while all region are not disk topologic
+void createRegionDijkstra(Triangles &triangle, FacetAttribute<int> &fa, std::vector<Region> &regions) {
+    std::vector<int> distanceAttribute(triangle.nfacets(), -1);
+    std::queue<int> queue({rand() % triangle.nfacets()});
+    distanceAttribute[queue.front()] = 0;
+    int index = 0;
+    regions.push_back(Region(queue.front(), triangle, regions.size() + 1));
+    fa[queue.front()] = regions.size() + 1;
+    while (index + 1 < triangle.nfacets() / 16) {
+        while (true) {
+            if (queue.empty()) {
+                break;
+            }
+            int facetToProcess = queue.front();
+            queue.pop();
+            
+            for (auto vertexRef : Surface::Facet(triangle, facetToProcess).iter_halfedges() ) {
+                auto edge = Surface::Halfedge(triangle, vertexRef);
+                if (edge.opposite() != -1) {
+                    auto f =  edge.opposite().facet();
+                    if (distanceAttribute[f] > distanceAttribute[facetToProcess] + 1 || distanceAttribute[f] == -1) {
+                            distanceAttribute[f] = distanceAttribute[facetToProcess] + 1;
+                            queue.push(f);
 
+                    }
+                }
+            }
+        }
+        index++;
+        auto element = std::max_element(distanceAttribute.begin(), distanceAttribute.end());
+        int indice = std::distance(distanceAttribute.begin(), element);
+        queue.push(indice);
+        distanceAttribute[indice] = 0;
+        regions.push_back(Region(indice, triangle, regions.size() + 1));
+        fa[indice] = regions.size() + 1;
+    }
+
+
+    
 }
