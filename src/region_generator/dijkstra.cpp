@@ -25,32 +25,7 @@ void generateNRegionRandom(int numberRegion, Triangles &triangle, FacetAttribute
         regions.push_back(Region(randomFacet, triangle, i));
     }
 
-    bool somethingChange = false;
-    do {
-        somethingChange = false;
-        for (auto &region : regions) {
-            std::vector<int> adjacentFacet = region.getAdjacentFacet();
-            for (auto f : adjacentFacet) {
-                if (fa[f] != 0) {
-                    continue;
-                }
-                fa[f] = region.getIdGroup();
-                region.addFacet(f);
-                somethingChange = true;
-            }
-        }
-        if (gifmode) {
-            //save the mesh
-            createDirectory("result");
-            createDirectory("result/region");
-
-            std::string path = "result/region/" + convertToNumberId(gifcounter) + ".geogram";
-            write_by_extension(path, triangle, {{{"border_inters", pa.ptr}}, {{"group_number", fa.ptr}}, {}});
-
-            gifcounter++;
-
-        }
-    } while (somethingChange);
+    developRegion(triangle, regions, fa, gifmode);
 }
 
 // fill distance table with dijkstra algorithm
@@ -107,6 +82,8 @@ void createRegionDijkstra(Triangles &triangle, FacetAttribute<int> &fa, std::vec
         regions.push_back(Region(indice, triangle, regions.size() + 1));
         fa[indice] = regions.size() + 1;
     }
+
+    developRegion(triangle, regions, fa);
 
 
     

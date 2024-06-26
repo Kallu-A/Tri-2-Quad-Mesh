@@ -173,4 +173,37 @@ class Region {
 
 };
 
+/**
+ * Expand some  region into the mesh to fill all Facet of the mesh
+ */
+void developRegion(Triangles &triangle, std::vector<Region> &regions, FacetAttribute<int> &region_owner, int gif_generation = false) {
+    bool somethingChange = false;
+    int gifcounter = 0;
+    do {
+        somethingChange = false;
+        for (auto &region : regions) {
+            std::vector<int> adjacentFacet = region.getAdjacentFacet();
+            for (auto f : adjacentFacet) {
+                if (region_owner[f] != 0) {
+                    continue;
+                }
+                region_owner[f] = region.getIdGroup();
+                region.addFacet(f);
+                somethingChange = true;
+            }
+        }
+        if (gif_generation) {
+            //save the mesh
+            createDirectory("result");
+            createDirectory("result/region");
+
+            std::string path = "result/region/" + convertToNumberId(gifcounter) + ".geogram";
+            write_by_extension(path, triangle, {{}, {{"group_number", region_owner.ptr}}, {}});
+
+            gifcounter++;
+
+        }
+    } while (somethingChange);
+}
+
 #endif // _REGION_H_
