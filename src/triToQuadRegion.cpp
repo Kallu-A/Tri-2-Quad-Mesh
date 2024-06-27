@@ -5,6 +5,7 @@
 #include "region_generator/dijkstra.cpp"  
 #include "utils/helpers.h"
 #include "region_generator/poisson_disk_sampling.cpp"
+#include "utils/topological_cleaning.h"
 
 #include <set>
 #include <map>
@@ -191,6 +192,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     assert(regions.size() > 0);
     std::cout << "Number of region created: " << regions.size() << std::endl;
 
+    convertToOnlyTopogicalDisk(triangle, fa, regions);
 
     borderOrientation borderOrientation;
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
@@ -202,13 +204,6 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     for (auto &region : regions) {
         continue;
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
-    }
-
-    for (auto &region : regions) {
-        if (!region.isDiskTopologic()) {
-            std::cout << "Region is not disk topologic "<< region.getIdGroup() << std::endl;
-            fa[region.getRegion()[0]] = - region.getIdGroup();
-        }
     }
 }
 

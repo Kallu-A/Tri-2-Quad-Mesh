@@ -47,6 +47,11 @@ class Region {
 
     }
 
+    // reset the region
+    void clear() {
+        region.clear();
+    }
+
     std::vector<int> getAdjacentFacet() {
         std::vector<int> adjacentFacet;
         std::unordered_set<int> borderNew;
