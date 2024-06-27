@@ -76,7 +76,7 @@ class Region {
         return adjacentFacet;
     }
 
-    std::vector<int> getRegion() const {
+    std::vector<int> getRegion() {
         return region;
     }
 

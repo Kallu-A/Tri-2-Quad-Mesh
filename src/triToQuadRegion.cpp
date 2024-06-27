@@ -9,6 +9,7 @@
 #include <set>
 #include <map>
 #include <string>
+#include <cassert>
 
 using namespace UM;
 
@@ -41,13 +42,14 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
     }
     middleVertice = middleVertice * (1.0 / middleVerticesList.size());
     // ---
- 
-    std::vector<std::string> keysBorder = borderOrientation.getAllKeyFromGroup(region.getIdGroup());
-    
-    std::vector<std::string> keysIntersect = borderOrientation.getAllKeyIntersectFromGroup(region.getIdGroup());
-    
-    int intersectNumber = borderOrientation.getMapIntersectBorder().size();
 
+    std::vector<std::string> keysBorder = borderOrientation.getAllKeyFromGroup(region.getIdGroup());
+    assert(keysBorder.size() > 2);
+    std::vector<std::string> keysIntersect = borderOrientation.getAllKeyIntersectFromGroup(region.getIdGroup());
+    assert(keysIntersect.size() > 0);
+
+    int intersectNumber = borderOrientation.getMapIntersectBorder().size();
+ 
     // add all interesect vertices to the new vertices    
     quad.points[region.getIdGroup() - 1] = middleVertice;
     for (auto key: keysIntersect) {
@@ -57,6 +59,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
             intersectIndex++;
         }
     }
+
     // create new vertices for each border
     for (auto key: keysBorder) {
         if(idVerticeFromKey.find(key) == idVerticeFromKey.end()) {
@@ -72,8 +75,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
             quad.points[borderIndex] = middleVertice;
             borderIndex++;
         }
-    }
-
+    }       
     // Link the vertices to create the quad
 
     int idMiddle = region.getIdGroup() - 1;
@@ -83,16 +85,13 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
 
         auto verticesBorder = getAllVerticeFromIntersectKey(intersect, region.getIdGroup());
         std::vector<std::string> border = getAllKeyContainNumbers(keysBorder, verticesBorder);
+        
         if (border.size() != 2) {
             if (border.size() == 1) {
-                std::cout << "Error: border size is not 2" << std::endl;
-                std::cout << "border size: " << border.size() << std::endl;
+                std::cout << "Error: border size is not 2: " << std::endl;
                 std::cout << "intersect: " << intersect << std::endl;
                 std::cout << "region: " << region.getIdGroup() << std::endl;
-                std::cout << "verticesBorder: ";
-                for (auto b : verticesBorder) {
-                    std::cout << b << ", ";
-                }
+
                 std::cout << std::endl << "border: ";
                 for (auto b : border) {
                     std::cout << b <<  ", ";
@@ -189,9 +188,9 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         //generate_region(triangle, fa, pa, regions, gifmode);     
         createRegionDijkstra(triangle, fa, regions);
     }
+    assert(regions.size() > 0);
     std::cout << "Number of region created: " << regions.size() << std::endl;
-    return;
-    
+
 
     borderOrientation borderOrientation;
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
@@ -201,7 +200,15 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     borderIndex = intersectIndex + borderOrientation.getMapIntersectBorder().size();
     quad.points.create_points(regions.size() + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
     for (auto &region : regions) {
+        continue;
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
+    }
+
+    for (auto &region : regions) {
+        if (!region.isDiskTopologic()) {
+            std::cout << "Region is not disk topologic "<< region.getIdGroup() << std::endl;
+            fa[region.getRegion()[0]] = - region.getIdGroup();
+        }
     }
 }
 
