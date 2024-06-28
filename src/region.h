@@ -19,6 +19,12 @@ int borderOut = 0;
 
 class Region {
     public:
+        /*
+            * @brief Constructor of the region
+            * @param beginning the first facet of the region
+            * @param triangle the mesh
+            * @param idGroup the id of the group
+        */
         Region(int beginning, Triangles &triangle, int idGroup) : region{beginning}, triangle{triangle}, idGroup{idGroup} {
             borderLimit = std::unordered_set<int>();
             auto face = Surface::Facet(triangle, beginning);
@@ -48,7 +54,7 @@ class Region {
     }
 
     // reset the region
-    void clear() {
+    void reset() {
         region.clear();
     }
 

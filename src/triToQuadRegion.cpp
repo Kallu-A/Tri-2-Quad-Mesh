@@ -182,17 +182,18 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         exit(1);
     }
     if (numberRegion != -1) {
-        std::cout << "Number of region specified by user " << std::endl;
+        std::cout << "Number of region specified by user ";
         generateNRegionRandom(numberRegion, triangle, fa, pa, regions, regionFacet, gifmode);
     } else {
-        std::cout << "Number of region calculated by the program " << std::endl;
+        std::cout << "Number of region calculated by the program ";
         //generate_region(triangle, fa, pa, regions, gifmode);     
         createRegionDijkstra(triangle, fa, regions);
     }
     assert(regions.size() > 0);
-    std::cout << "Number of region created: " << regions.size() << std::endl;
+    std::cout << regions.size() << std::endl;
 
     convertToOnlyTopogicalDisk(triangle, fa, regions);
+    std::cout << "Number of region after topological cleaning: " << regions.size() << std::endl;
 
     borderOrientation borderOrientation;
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
@@ -202,7 +203,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     borderIndex = intersectIndex + borderOrientation.getMapIntersectBorder().size();
     quad.points.create_points(regions.size() + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
     for (auto &region : regions) {
-        continue;
+        //continue;
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
     }
 }

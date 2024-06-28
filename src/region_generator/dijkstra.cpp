@@ -54,7 +54,8 @@ void createRegionDijkstra(Triangles &triangle, FacetAttribute<int> &fa, std::vec
     int index = 0;
     regions.push_back(Region(queue.front(), triangle, regions.size() + 1));
     fa[queue.front()] = regions[0].getIdGroup();
-    while (index + 1 < triangle.nfacets() / 16) {
+    int maxElement = 15;
+    while (index + 1 < triangle.nfacets() / 16 || maxElement >= 4) {
         while (true) {
             if (queue.empty()) {
                 break;
@@ -77,6 +78,7 @@ void createRegionDijkstra(Triangles &triangle, FacetAttribute<int> &fa, std::vec
         index++;
         auto element = std::max_element(distanceAttribute.begin(), distanceAttribute.end());
         int indice = std::distance(distanceAttribute.begin(), element);
+        maxElement  = distanceAttribute[indice];
         queue.push(indice);
         distanceAttribute[indice] = 0;
         regions.push_back(Region(indice, triangle, regions.size() + 1));
