@@ -6,6 +6,7 @@
 #include "utils/helpers.h"
 #include "region_generator/poisson_disk_sampling.cpp"
 #include "utils/topological_cleaning.h"
+#include "utils/hardEdge.h"
 
 #include <set>
 #include <map>
@@ -88,38 +89,22 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         std::vector<std::string> border = getAllKeyContainNumbers(keysBorder, verticesBorder);
         
         if (border.size() != 2) {
-            if (border.size() == 1) {
-                std::cout << "Error: border size is not 2: " << std::endl;
-                std::cout << "intersect: " << intersect << std::endl;
-                std::cout << "region: " << region.getIdGroup() << std::endl;
+            std::cout << "Border size is not 2 current: " << border.size() << std::endl;
+            continue;
+            std::cout << "Error: border size is not 2 current: " << border.size() << std::endl;
+            std::cout << "intersect: " << intersect;
+            std::cout << "  with region: " << region.getIdGroup() << std::endl;
 
-                std::cout << std::endl << "border: ";
-                for (auto b : border) {
-                    std::cout << b <<  ", ";
-                }
-                std::cout << std::endl<< "keysBorder: ";
-                for (auto b : keysBorder) {
-                    std::cout << b <<  ", ";
-                }
-                std::cout << std::endl;
-                exit(1);
+            std::cout << std::endl << "border contains: ";
+            for (auto b : border) {
+                std::cout << b <<  ", ";
             }
-           
-            // Try to rectify by taking out the vertice the most far away from the middle vertice
-            auto middleVerticeVector = quad.points[idMiddle];
-            while(border.size() != 2) {
-                double maxDistance = 0;
-                int idMax = 0;
-                for (int i = 0; i < verticesBorder.size(); i++) {
-                    auto vertice = Surface::Vertex(triangle, verticesBorder[i]);
-                    double distance = (middleVerticeVector - vertice.pos()).norm();
-                    if (distance > maxDistance) {
-                        maxDistance = distance;
-                        idMax = i;
-                    }
-                }
-                border.erase(border.begin() + idMax);
+            std::cout << std::endl<< "keysBorder: ";
+            for (auto b : keysBorder) {
+                std::cout << b <<  ", ";
             }
+            std::cout << std::endl;
+            exit(1);
 
         }
         
@@ -164,7 +149,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
 
 
 // Algorithm to convert a triangle mesh to a quad mesh
-void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, int numberRegion, FacetAttribute<int> &faQuad, bool gifmode = false ) {
+void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, PointAttribute<int> &hardedge, CornerAttribute<int> &ca, int numberRegion, FacetAttribute<int> &faQuad, bool gifmode = false ) {
     if (gifmode) {
         createDirectory("result");
         createDirectory("result/region");
@@ -192,8 +177,12 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
     assert(regions.size() > 0);
     std::cout << regions.size() << std::endl;
 
+    cleanHardEdge(triangle, regions, fa, hardedge);
+    std::cout << "Number of region after hard edge cleaning: " << regions.size() << std::endl;
+
     convertToOnlyTopogicalDisk(triangle, fa, regions);
     std::cout << "Number of region after topological cleaning: " << regions.size() << std::endl;
+
 
     borderOrientation borderOrientation;
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
