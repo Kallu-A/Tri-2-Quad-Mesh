@@ -31,7 +31,7 @@ void detectHardEdge(Triangles &triangle, FacetAttribute<int> &fa, PointAttribute
             auto normalFacetOpposite = calculateNormalTriangle(facetOpposite);
             auto dotResult = dotProduct(normalFacet, normalFacetOpposite);
     
-            if (dotResult < cos(30)) {
+            if (dotResult < cos(30.5)) {
                 std::cout << "Hard edge detected" << std::endl;
                 edgeDetected[halfedge] = 1;
                 edgeDetected[halfedge.opposite()] = 1;
