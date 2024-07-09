@@ -53,6 +53,17 @@ class Region {
 
     }
 
+    bool isHardEdgePresent(CornerAttribute<int> &edge) {
+        for (int i = 0; i < region.size(); i++) {
+            auto f = Surface::Facet(triangle, region[i]);
+            for (int j = 0; j < 3; j++) {
+                if (edge[f.halfedge(j)] == 1)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     // reset the region
     void reset() {
         region.clear();
