@@ -5,6 +5,7 @@
 #include "../region.h"
 #include "normalCalculator.h"
 
+#include <optional>
 #include <cmath>
 
 /**
@@ -59,7 +60,7 @@ void growthRegion(Triangles &triangle, Region &regionInitial, Region &region, Fa
     bool growing = false;
     fa[region.getRegion()[0]] = region.getIdGroup();
     do {
-        std::cout << "Growing region" << std::endl;
+
         growing = false;
         for (auto facet: region.getRegion()) {
             for (auto halfedge : Surface::Facet(triangle, facet).iter_halfedges()) {
@@ -86,8 +87,8 @@ void cleanHardEdge(Triangles &triangle, std::vector<Region> &regions, FacetAttri
     CornerAttribute<int> edge(triangle, 0);
     detectHardEdge(triangle, fa, verticesDetected, edge);
     std::vector<Region> regionsToAdd;
-    std::vector<Region> regionsToRemove;
     int regionHardEdge = 0;
+
     for (auto &region : regions) {
         if (!region.isHardEdgePresent(edge)) {
             continue;
@@ -95,31 +96,37 @@ void cleanHardEdge(Triangles &triangle, std::vector<Region> &regions, FacetAttri
         for (int i = 0; i < region.getRegion().size(); i++) {
             fa[region.getRegion()[i]] = 0;
         }
-        regionsToRemove.push_back(region);
         regionHardEdge++;
         int indexEmpty = -1;
+        bool isFirst = true;
+        std::optional<Region> regionToAssign;
         do {
             indexEmpty = isFacetEmpty(region, fa);
-            std::cout << "Index empty: " << indexEmpty << std::endl;
             if (indexEmpty != -1) {
-                Region newRegion(region.getRegion()[indexEmpty], triangle, regions.size() + 1);
-                regionsToAdd.push_back(newRegion);
+                
+                if (isFirst) {
+                    Region newRegion(region.getRegion()[indexEmpty], triangle, region.getIdGroup());
+                    growthRegion(triangle, region, newRegion, fa, edge);
+                    isFirst = false;
+                    regionToAssign.emplace(newRegion);
+                    continue;
+                }
+                Region newRegion(region.getRegion()[indexEmpty], triangle, regions.size() + 1 + regionsToAdd.size());
                 growthRegion(triangle, region, newRegion, fa, edge);
+                regionsToAdd.push_back(newRegion);
                 
             }
         } while (indexEmpty != -1);
+        region.assign(*regionToAssign);
         
 
     } 
     std::cout << "Number of region cut because of a hard edge: " << regionHardEdge << std::endl;
 
 
-    regions.erase(std::remove_if(regions.begin(), regions.end(), [&regionsToRemove](Region &region) {
-        return std::find(regionsToRemove.begin(), regionsToRemove.end(), region) != regionsToRemove.end();
-    }), regions.end());
-
-
-    regions.insert(regions.end(), regionsToAdd.begin(), regionsToAdd.end());
+    for (auto &region : regionsToAdd) {
+        regions.push_back(region);
+    }
 
 
 }

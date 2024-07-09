@@ -102,6 +102,13 @@ class Region {
         return region;
     }
 
+    // assign the region to the region
+    void assign(Region &region) {
+        this->region = region.region;
+        this->borderLimit = region.borderLimit;
+        this->idGroup = region.idGroup;
+    }
+
     // return a vector of vertices that are on the border of the region
     std::vector<int> getBorderVertice(CornerAttribute<int> &ca) const {
         std::vector<int> border;
