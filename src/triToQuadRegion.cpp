@@ -90,21 +90,26 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         
         if (border.size() != 2) {
             std::cout << "Border size is not 2 current: " << border.size() << std::endl;
-            continue;
-            std::cout << "Error: border size is not 2 current: " << border.size() << std::endl;
-            std::cout << "intersect: " << intersect;
-            std::cout << "  with region: " << region.getIdGroup() << std::endl;
+            if (border.size() < 2) {
+                std::cout << "Border size is less than 2" << std::endl;
+                continue;
+            }
 
-            std::cout << std::endl << "border contains: ";
-            for (auto b : border) {
-                std::cout << b <<  ", ";
+            auto middleVerticeVector = quad.points[idMiddle];
+            while(border.size() != 2) {
+                double maxDistance = 0;
+                int idMax = 0;
+                for (int i = 0; i < verticesBorder.size(); i++) {
+                    auto vertice = Surface::Vertex(triangle, verticesBorder[i]);
+                    double distance = (middleVerticeVector - vertice.pos()).norm();
+                    if (distance > maxDistance) {
+                        maxDistance = distance;
+                        idMax = i;
+                    }
+                }
+                border.erase(border.begin() + idMax);
             }
-            std::cout << std::endl<< "keysBorder: ";
-            for (auto b : keysBorder) {
-                std::cout << b <<  ", ";
-            }
-            std::cout << std::endl;
-            exit(1);
+        
 
         }
         
