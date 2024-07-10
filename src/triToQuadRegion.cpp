@@ -36,8 +36,8 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
     // --- Caclcul the middle vertice of the region
     std::vector<int> border = region.getAllVerticeRegion();
     UM::vec3 middleVertice = UM::vec3(0, 0, 0);
-    //auto middleVerticesList = region.getAllVerticeRegion();
-    auto middleVerticesList = border;
+    auto middleVerticesList = region.getBorderVertice(ca);
+    //auto middleVerticesList = border;
     for (auto f : middleVerticesList) {
         auto vertice = Surface::Vertex(triangle, f);
         middleVertice += vertice.pos();
@@ -89,12 +89,12 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         std::vector<std::string> border = getAllKeyContainNumbers(keysBorder, verticesBorder);
         
         if (border.size() != 2) {
-            std::cout << "Border size is not 2 current: " << border.size() << std::endl;
             if (border.size() < 2) {
                 std::cout << "Border size is less than 2" << std::endl;
                 continue;
             }
-
+            std::cout << "Border size is more than 2 : ";
+            std::cout << intersect << std::endl;
             auto middleVerticeVector = quad.points[idMiddle];
             while(border.size() != 2) {
                 double maxDistance = 0;
