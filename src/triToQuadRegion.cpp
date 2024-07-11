@@ -7,6 +7,7 @@
 #include "region_generator/poisson_disk_sampling.cpp"
 #include "utils/topological_cleaning.h"
 #include "utils/hardEdge.h"
+#include "utils/geometrical_cleaning.h"
 
 #include <set>
 #include <map>
@@ -200,6 +201,8 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         //continue;
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
     }
+
+    smoothFacet(quad);
 }
 
  
