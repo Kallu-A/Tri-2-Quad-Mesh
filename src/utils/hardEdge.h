@@ -27,8 +27,8 @@ void detectHardEdge(Triangles &triangle, FacetAttribute<int> &fa, PointAttribute
             auto facet = Surface::Facet(triangle, halfedge.facet());
             auto facetOpposite = Surface::Facet(triangle, halfedge.opposite().facet());
 
-            auto normalFacet = calculateNormalTriangle(facet);
-            auto normalFacetOpposite = calculateNormalTriangle(facetOpposite);
+            auto normalFacet = calculateNormalQuad(facet);
+            auto normalFacetOpposite = calculateNormalQuad(facetOpposite);
             auto dotResult = dotProduct(normalFacet, normalFacetOpposite);
     
             if (dotResult < cos(30.5)) {
