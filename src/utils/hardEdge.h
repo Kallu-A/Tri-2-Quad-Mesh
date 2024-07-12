@@ -27,8 +27,8 @@ void detectHardEdge(Triangles &triangle, FacetAttribute<int> &fa, PointAttribute
             auto facet = Surface::Facet(triangle, halfedge.facet());
             auto facetOpposite = Surface::Facet(triangle, halfedge.opposite().facet());
 
-            auto normalFacet = calculateNormalQuad(facet);
-            auto normalFacetOpposite = calculateNormalQuad(facetOpposite);
+            auto normalFacet = calculateNormalTriangle(facet);
+            auto normalFacetOpposite = calculateNormalTriangle(facetOpposite);
             auto dotResult = dotProduct(normalFacet, normalFacetOpposite);
     
             if (dotResult < cos(30.5)) {
@@ -45,33 +45,32 @@ void detectHardEdge(Triangles &triangle, FacetAttribute<int> &fa, PointAttribute
 /**
  * @brief Function to detect hard edge in the mesh and fill the attributs with 1 if the edge is a hard edge
  */
-PointAttribute<int> detectHardEdge(Quads &quad) {
-    PointAttribute<int> verticesDetected(quad.points, 0);
+void detectHardEdgeQuad(Quads &quad, PointAttribute<int> &verticesDetected) {
     CornerAttribute<int> edgesResult(quad, 0);
     for (auto edge : quad.iter_halfedges()) {
         auto halfedge = Surface::Halfedge(quad, edge);
+        
         if (edgesResult[edge] != 0 || halfedge.opposite() != -1 && edgesResult[halfedge.opposite()] != 0) {
                 continue; // halfedge already treated or opposite halfedge already treated
-            }
-            // if opposite doesn't exist it's a hard edge but we aren't interested in it 
-            if (halfedge.opposite() == -1) {
-                edgesResult[halfedge] = 1;
-                continue;
-            }
+        }
+        // if opposite doesn't exist it's a hard edge but we aren't interested in it 
+        if (halfedge.opposite() == -1) {
+            edgesResult[halfedge] = 1;
+            continue;
+        }
+        auto facet = Surface::Facet(quad, halfedge.facet());
+        auto facetOpposite = Surface::Facet(quad, halfedge.opposite().facet());
 
-            auto facet = Surface::Facet(quad, halfedge.facet());
-            auto facetOpposite = Surface::Facet(quad, halfedge.opposite().facet());
+        auto normalFacet = calculateNormalQuad(facet);
+        auto normalFacetOpposite = calculateNormalQuad(facetOpposite);
+        auto dotResult = dotProduct(normalFacet, normalFacetOpposite);
 
-            auto normalFacet = calculateNormalTriangle(facet);
-            auto normalFacetOpposite = calculateNormalTriangle(facetOpposite);
-            auto dotResult = dotProduct(normalFacet, normalFacetOpposite);
-    
-            if (dotResult < cos(30.5)) {
-                edgesResult[halfedge] = 1;
-                edgesResult[halfedge.opposite()] = 1;
-                verticesDetected[halfedge.from()] = 1;
-                verticesDetected[halfedge.to()] = 1;
-            }
+        if (dotResult < cos(30.5)) {
+            edgesResult[halfedge] = 1;
+            edgesResult[halfedge.opposite()] = 1;
+            verticesDetected[halfedge.from()] = 1;
+            verticesDetected[halfedge.to()] = 1;
+        }
     }
 }
 

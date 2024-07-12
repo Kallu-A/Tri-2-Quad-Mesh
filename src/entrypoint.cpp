@@ -141,10 +141,8 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl << "Result file: " << resPath + "/" +  pathQuad << std::endl;
 
     std::cout << "Quad Mesh data: number of vertices: " << quad.nverts() << " number of facets: " << quad.nfacets() << std::endl << std::endl;
-    //std::cout << "Number of vertices: " << q.nverts();
-    //std::cout << "Number of facets: " << q.nfacets() << std::endl;
 
-    //End timer
+     //End timer
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     std::cout << "Time taken: " << duration.count() << " miliseconds" << std::endl;

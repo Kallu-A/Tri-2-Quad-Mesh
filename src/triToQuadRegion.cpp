@@ -201,7 +201,7 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
         //continue;
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
     }
-
+    quad.connect();
     smoothFacet(quad);
 }
 

@@ -48,6 +48,16 @@ UM::vec3 calculateNormalQuad(UM::vec3 v0, UM::vec3 v1, UM::vec3 v2, UM::vec3 v3)
 
 }
 
+UM::vec3 calculateNormalQuad(Surface::Facet &facet) {
+    // get each vec3
+    UM::vec3 v0 = facet.vertex(0).pos();
+    UM::vec3 v1 = facet.vertex(1).pos();
+    UM::vec3 v2 = facet.vertex(2).pos();
+    UM::vec3 v3 = facet.vertex(3).pos();
+    return calculateNormalQuad(v0, v1, v2, v3);
+
+}
+
 
 void testNormal() {
     UM::vec3 v0 = UM::vec3(0, 0, 0);
