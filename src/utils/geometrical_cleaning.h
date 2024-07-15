@@ -11,7 +11,7 @@ void smoothFacet(Quads &quad) {
     std::cout << "Process to smooth the mesh with barycenter of neighbor iteration: " ;
     PointAttribute<int> hardedge(quad.points, 0);
     detectHardEdgeQuad(quad, hardedge);
-    int number = 1;
+    int number = 2;
   for (int i = 0; i < number; i++) {
         for (auto verticeId: quad.iter_vertices()) {
             if (hardedge[verticeId] == 1) {

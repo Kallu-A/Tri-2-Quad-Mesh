@@ -10,7 +10,7 @@
 std::vector<int> getAllVerticeFromIntersectKey(std::string intersectKey, int intersectId) {
     std::vector<int> numbers;
     std::string num_str = std::to_string(intersectId);
-    
+
     //transform the string in a list of std::int with each one containiing the value
     size_t pos = 0;
     while ((pos = intersectKey.find("-")) != std::string::npos) {
@@ -35,8 +35,10 @@ std::vector<int> getAllVerticeFromIntersectKey(std::string intersectKey, int int
 // "1-2-5", 2 -> true
 bool isElementInString(const std::string& str, int element) {
     std::string num_str = std::to_string(element);
-
     // Check if num_str is at the beginning of the string
+    if (str.length() < num_str.length()) {
+        return false;
+    }
     if (str.substr(0, num_str.length()) == num_str) {
         if (str.length() == num_str.length() || str[num_str.length()] == '-') {
         return true;
@@ -60,7 +62,6 @@ bool isElementInString(const std::string& str, int element) {
         }
         pos = str.find(num_str, pos + 1);
     }
-
     return false;
 }
 

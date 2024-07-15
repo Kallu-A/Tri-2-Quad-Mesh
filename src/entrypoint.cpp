@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
     std::string extension = fs_path.extension().string();
     bool isGeogram = true;
     if (isGeogram)
-        extension = ".geogram";
+        extension = ".obj";
     std::string pathTri = (fs_path.parent_path() / std::string(base_name + "_tri" + extension)).string();
     std::string pathQuad = (fs_path.parent_path() / std::string(base_name + "_quad" + extension)).string();
     // Save mesh with previously created attribute
