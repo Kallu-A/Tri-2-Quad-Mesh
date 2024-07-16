@@ -12,9 +12,12 @@ void smoothFacet(Quads &quad) {
     PointAttribute<int> hardedge(quad.points, 0);
     detectHardEdgeQuad(quad, hardedge);
     int number = 2;
-  for (int i = 0; i < number; i++) {
+    std::vector<vec3> barycenters(quad.nverts(), vec3(0, 0, 0));
+
+    for (int i = 0; i < number; i++) {
         for (auto verticeId: quad.iter_vertices()) {
             if (hardedge[verticeId] == 1) {
+                barycenters[verticeId] = quad.points[verticeId];
                 continue;
             }
             auto vertice = Surface::Vertex(quad, verticeId);
@@ -22,11 +25,17 @@ void smoothFacet(Quads &quad) {
             int count = 0;
             for (auto edge: vertice.iter_halfedges()) {
                 auto halfedge = Surface::Halfedge(quad, edge);
-                barycenter += halfedge.to().pos();
-                count++;
+                barycenter += halfedge.to().pos() + vertice.pos();
+                count += 2;
             }
-            barycenter = barycenter * (1.0 / count);
-            vertice.pos() = barycenter;
+            barycenter += vertice.pos();
+            count++;
+
+            barycenter = barycenter / count;
+            barycenters[verticeId]= barycenter;
+        }
+        for (int i = 0; i < quad.nverts(); i++) {
+            quad.points[i] = barycenters[i];
         }
     }
 

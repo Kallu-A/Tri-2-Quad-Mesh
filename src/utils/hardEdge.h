@@ -43,7 +43,7 @@ void detectHardEdge(Triangles &triangle, FacetAttribute<int> &fa, PointAttribute
 }
 
 /**
- * @brief Function to detect hard edge in the mesh and fill the attributs with 1 if the edge is a hard edge
+ * @brief Function to detect hard edge in the mesh and fill the attributs with 1 if the edge is a hard edge count the border as hard edge 
  */
 void detectHardEdgeQuad(Quads &quad, PointAttribute<int> &verticesDetected) {
     CornerAttribute<int> edgesResult(quad, 0);
@@ -56,6 +56,8 @@ void detectHardEdgeQuad(Quads &quad, PointAttribute<int> &verticesDetected) {
         // if opposite doesn't exist it's a hard edge but we aren't interested in it 
         if (halfedge.opposite() == -1) {
             edgesResult[halfedge] = 1;
+            verticesDetected[halfedge.from()] = 1;
+            verticesDetected[halfedge.to()] = 1;
             continue;
         }
         auto facet = Surface::Facet(quad, halfedge.facet());

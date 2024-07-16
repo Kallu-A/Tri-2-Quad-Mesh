@@ -2,7 +2,6 @@
 
 # Triangle to Quadrilateral Mesh Conversion
 ![Display](.res/tri-2-quad.png)
-Result with `triToQuadSimple.cpp`
 
 ## Compile
 ```shell

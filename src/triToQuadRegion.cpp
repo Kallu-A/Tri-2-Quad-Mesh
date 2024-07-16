@@ -37,8 +37,8 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
     // --- Caclcul the middle vertice of the region
     std::vector<int> border = region.getAllVerticeRegion();
     UM::vec3 middleVertice = UM::vec3(0, 0, 0);
-    auto middleVerticesList = region.getBorderVertice(ca);
-    //auto middleVerticesList = border;
+    //auto middleVerticesList = region.getBorderVertice(ca);
+    auto middleVerticesList = border;
     for (auto f : middleVerticesList) {
         auto vertice = Surface::Vertex(triangle, f);
         middleVertice += vertice.pos();
