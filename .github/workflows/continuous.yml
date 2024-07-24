@@ -1,61 +1,86 @@
 name: Continuous
 
-on: 
+on:
   push:
-    branches:
-      - main
   create:
     tags:
 
 jobs:
+
   linux-mac:
     strategy:
       matrix:
-        cfg: [{os: ubuntu-latest, cxx: g++-9}, {os: macos-latest, cxx: clang++}]
+        cfg: [{os: ubuntu-latest, cxx: g++-9},
+              {os: macos-latest, cxx: clang++}]
+        # config: [Release, Debug]
         config: [Release]
 
-    runs-on: ${{ matrix.cfg.os }}
+    runs-on:  ${{ matrix.cfg.os }}
 
     env:
       CXX: ${{ matrix.cfg.cxx }}
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-    - name: Setup dependencies
-      run: |
-        if [ ${{ matrix.cfg.os }} == 'ubuntu-latest' ]; then
-          sudo apt-get update && sudo apt-get install -y g++-9;
-        fi
-        if [ ${{ matrix.cfg.os }} == 'macos-latest' ]; then
-          brew install gcc;
-        fi
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DOSName=${{ matrix.cfg.os }}
 
-    - name: Release build
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      - name: CMake Build
+        run: cmake --build build --parallel
 
-    - name: Create archive
-      run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
+      - name: Run executable - entrypoint_exec
+        run: build/entrypoint_exec_${{ matrix.cfg.os }} path=mesh/quarterdisk_tri.mesh
+
+      
+      - name: Create archive
+        run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
+
+      -
+        name: Deploy
+        uses: xresloader/upload-to-github-release@v1
+        with:
+          tags: true
+          draft: false
+          file: bunin_${{ matrix.cfg.os }}.tar.gz
+          overwrite: false
+          update_latest_release: true
+          verbose: true
+
 
   windows-msvc:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-    - name: Setup MSVC
-      run: |
-        choco install visualstudio2019buildtools
-        choco install visualstudio2019-workload-vctools
+      - name: Configure CMake
+        run: cmake -B build -DOSName=win
 
-    - name: Release build
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Release build
+        run: cmake --build build --parallel --config Release
 
-    - name: Release run
-      run: build/entrypoint_exec_win.exe
+      - name: Release run - entrypoint_exec
+        run: build/Release/entrypoint_exec_win.exe path=mesh/quarterdisk_tri.mesh
 
-      
+
+      - name: Debug build
+        run: cmake --build build --parallel --config Debug
+
+      - name: Debug run - entrypoint_exec
+        run: build/Debug/entrypoint_exec_win.exe
+
+      -
+        name: Deploy
+        uses: xresloader/upload-to-github-release@v1
+        with:
+          tags: true
+          draft: false
+          file: build/Release/entrypoint_exec_win.exe;
+          overwrite: true
+          update_latest_release: true
+          verbose: true
