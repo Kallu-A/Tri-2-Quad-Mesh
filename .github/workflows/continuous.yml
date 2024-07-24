@@ -2,20 +2,19 @@ name: Continuous
 
 on: 
   push:
+    branches:
+      - main
   create:
     tags:
 
 jobs:
-
   linux-mac:
     strategy:
       matrix:
-        cfg: [{os: ubuntu-latest, cxx: g++-9},
-              {os: macos-latest, cxx: clang++}]
-        # config: [Release, Debug]
+        cfg: [{os: ubuntu-latest, cxx: g++-9}, {os: macos-latest, cxx: clang++}]
         config: [Release]
 
-    runs-on:  ${{ matrix.cfg.os }}
+    runs-on: ${{ matrix.cfg.os }}
 
     env:
       CXX: ${{ matrix.cfg.cxx }}
@@ -25,13 +24,22 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Setup dependencies
+      run: |
+        if [ ${{ matrix.cfg.os }} == 'ubuntu-latest' ]; then
+          sudo apt-get update && sudo apt-get install -y g++-9;
+        fi
+        if [ ${{ matrix.cfg.os }} == 'macos-latest' ]; then
+          brew install gcc;
+        fi
+
     - name: Release build
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release
-      
+
     - name: Create archive
       run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
-    -
-      name: Deploy
+
+    - name: Deploy
       uses: xresloader/upload-to-github-release@v1
       with:
         tags: true
@@ -41,14 +49,18 @@ jobs:
         update_latest_release: true
         verbose: true
 
-
   windows-msvc:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
+
+    - name: Setup MSVC
+      run: |
+        choco install visualstudio2019buildtools
+        choco install visualstudio2019-workload-vctools
 
     - name: Release build
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release
@@ -56,13 +68,12 @@ jobs:
     - name: Release run
       run: build/entrypoint_exec_win.exe
 
-    -
-      name: Deploy
+    - name: Deploy
       uses: xresloader/upload-to-github-release@v1
       with:
         tags: true
         draft: false
-        file: build/entrypoint_exec_win.exe;
+        file: build/entrypoint_exec_win.exe
         overwrite: true
         update_latest_release: true
         verbose: true
