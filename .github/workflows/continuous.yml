@@ -28,9 +28,6 @@ jobs:
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DOSName=${{ matrix.cfg.os }}
 
-    - name: CMake Build
-      run: cmake --build build --parallel
-
     - name: Test executable
       run: bash test.sh 1 500 build/entrypoint_exec_${{ matrix.cfg.os }}
 
@@ -60,7 +57,7 @@ jobs:
       run: cmake -B build -DOSName=win
 
     - name: Release build
-      run: cmake --build build --parallel --config Release
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
     - name: Release run
       run: build/Release/entrypoint_exec_win.exe
