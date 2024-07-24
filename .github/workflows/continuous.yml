@@ -39,16 +39,6 @@ jobs:
     - name: Create archive
       run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
 
-    - name: Deploy
-      uses: xresloader/upload-to-github-release@v1
-      with:
-        tags: true
-        draft: false
-        file: bunin_${{ matrix.cfg.os }}.tar.gz
-        overwrite: false
-        update_latest_release: true
-        verbose: true
-
   windows-msvc:
     runs-on: windows-latest
 
@@ -68,12 +58,4 @@ jobs:
     - name: Release run
       run: build/entrypoint_exec_win.exe
 
-    - name: Deploy
-      uses: xresloader/upload-to-github-release@v1
-      with:
-        tags: true
-        draft: false
-        file: build/entrypoint_exec_win.exe
-        overwrite: true
-        update_latest_release: true
-        verbose: true
+      
