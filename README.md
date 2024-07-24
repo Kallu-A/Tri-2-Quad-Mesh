@@ -25,6 +25,7 @@ or
 ./build/entrypoint_exec path=mesh_path n_region=number_region p_area=percent_area_region
 # each parameter can be added when needed you can have only path or path and n_area
 ``` 
+
 All parameters: **gif**, **path**, **n_region**, **p_area**
 The path is really important to choose which mesh has to be processed.
 The gif is for debugging and display purposes.
