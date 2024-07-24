@@ -10,7 +10,7 @@ jobs:
   linux-mac:
     strategy:
       matrix:
-        cfg: [{os: ubuntu-latest, cxx: g++-9},
+        cfg: [{os: ubuntu-latest, cxx: g++-11},
               {os: macos-latest, cxx: clang++}]
         # config: [Release, Debug]
         config: [Release]
