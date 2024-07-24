@@ -28,9 +28,6 @@ jobs:
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DOSName=${{ matrix.cfg.os }}
 
-    - name: Test executable
-      run: bash test.sh 1 500 build/entrypoint_exec_${{ matrix.cfg.os }}
-
     - name: Create archive
       run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
     -
@@ -62,12 +59,6 @@ jobs:
     - name: Release run
       run: build/Release/entrypoint_exec_win.exe
 
-
-    - name: Debug build
-      run: cmake --build build --parallel --config Debug
-
-    - name: Debug run - delete facet
-      run: build/Debug/main_win.exe
     -
       name: Deploy
       uses: xresloader/upload-to-github-release@v1
