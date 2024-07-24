@@ -26,3 +26,6 @@ or
 # each parameter can be added when needed you can have only path or path and n_area
 ``` 
 All parameters: **gif**, **path**, **n_region**, **p_area**
+The path is really important to choose which mesh has to be processed.
+The gif is for debugging and display purposes.
+It's not recommended to use n_region and p_area as the results given can be pretty bad, either low poly or too much.
