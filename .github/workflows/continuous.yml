@@ -25,9 +25,9 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DOSName=${{ matrix.cfg.os }}
-
+    - name: Release build
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      
     - name: Create archive
       run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
     -
@@ -50,14 +50,11 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Configure CMake
-      run: cmake -B build -DOSName=win
-
     - name: Release build
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
     - name: Release run
-      run: build/Release/entrypoint_exec_win.exe
+      run: build/entrypoint_exec_win.exe
 
     -
       name: Deploy
@@ -65,7 +62,7 @@ jobs:
       with:
         tags: true
         draft: false
-        file: build/Release/entrypoint_exec_win.exe;
+        file: build/entrypoint_exec_win.exe;
         overwrite: true
         update_latest_release: true
         verbose: true
