@@ -48,39 +48,3 @@ jobs:
           overwrite: false
           update_latest_release: true
           verbose: true
-
-
-  windows-msvc:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Configure CMake
-        run: cmake -B build -DOSName=win
-
-      - name: Release build
-        run: cmake --build build --parallel --config Release
-
-      - name: Release run - entrypoint_exec
-        run: build/Release/entrypoint_exec_win.exe path=mesh/quarterdisk_tri.mesh
-
-
-      - name: Debug build
-        run: cmake --build build --parallel --config Debug
-
-      - name: Debug run - entrypoint_exec
-        run: build/Debug/entrypoint_exec_win.exe
-
-      -
-        name: Deploy
-        uses: xresloader/upload-to-github-release@v1
-        with:
-          tags: true
-          draft: false
-          file: build/Release/entrypoint_exec_win.exe;
-          overwrite: true
-          update_latest_release: true
-          verbose: true

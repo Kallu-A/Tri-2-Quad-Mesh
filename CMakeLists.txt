@@ -59,29 +59,5 @@ set_target_properties(
 )
 
 
-
-# Add executable binary
-add_executable(ci src/entrypoint.cpp)
-
-# Link binary with ultimaille / param-parser
-target_link_libraries(ci  ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
-
-IF (NOT WIN32)
-	target_link_libraries(ci m)
-ENDIF()
-
-if (NOT DEFINED OSName)
-  set(OSName ${CMAKE_SYSTEM_NAME})
-endif()
-
-set_target_properties(
-  ci
-        PROPERTIES
-            OUTPUT_NAME "helloworld"
-)
-
-
-
-
 # Copy asset files to build directory
 configure_file(mesh/quarterdisk_tri.mesh mesh/quarterdisk_tri.mesh COPYONLY)
