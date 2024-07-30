@@ -1,13 +1,14 @@
 #include <ultimaille/all.h>
 #include <set>
+#include <map>
 
 #include "utils/keyHelper.h"
 
 using namespace UM;
 
 enum class Mode {
-    IN,
-    OUT
+    INPUT,
+    OUTPUT
 };
 
 class IntersectData {
@@ -61,8 +62,8 @@ void fillIntersect(std::string keyIntersect, int vertices, Triangles &triangle, 
         std::string key = generateKey(region, regionOposite);
         intersectDataFolder.emplace(keyIntersect,std::vector<IntersectData>());
     
-        intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(region), Mode::OUT));
-        intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(regionOposite), Mode::IN));
+        intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(region), Mode::OUTPUT));
+        intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(regionOposite), Mode::INPUT));
     }
     // Case where the intersect has a border with void and so the halfedge doesn't exist
     if (isElementInString(keyIntersect, borderOut) == true) {
@@ -73,8 +74,8 @@ void fillIntersect(std::string keyIntersect, int vertices, Triangles &triangle, 
                 auto regionOposite = borderOut;
                 
                 std::string key = generateKey(region, regionOposite);
-                intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(region), Mode::OUT));
-                intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(regionOposite), Mode::IN));
+                intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(region), Mode::OUTPUT));
+                intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(regionOposite), Mode::INPUT));
             
             }
         }
@@ -89,7 +90,7 @@ Mode getModeFromKey(std::string key, std::string border, std::string region) {
         }
     }
 
-    return Mode::IN;
+    return Mode::INPUT;
     std::cout << "Error: no data found for key: " << key << " border: " << border << " region: " << region << "\n";
     for (auto key:  data) {
         std::cout << "Key: " << key.getKeyBorder() << " Region: " << key.getRegion() << "\n";

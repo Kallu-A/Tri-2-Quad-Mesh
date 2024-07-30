@@ -121,7 +121,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         //get the data from the intersectdatafolder to now which orientation to do 
         auto modeidBorder1  = getModeFromKey(intersect, border[0], std::to_string(region.getIdGroup()));
         int idGroup = region.getIdGroup();
-        if (modeidBorder1 == Mode::OUT) {
+        if (modeidBorder1 == Mode::OUTPUT) {
             int temp = idBorder1;
             idBorder1 = idBorder2;
             idBorder2 = temp;
