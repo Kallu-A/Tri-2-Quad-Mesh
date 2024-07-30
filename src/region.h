@@ -151,14 +151,17 @@ class Region {
             auto v1 = f.halfedge(1);
             auto v2 = f.halfedge(2);
 
+            std::cout << "a" << std::endl;
             if (!isElementInVector(region, v0.opposite().facet()) || v0.opposite() == -1) {
                 border.push_back(v0);
                 ca[v0] = idGroup;
             }
+            std::cout << "b" << std::endl;
             if (!isElementInVector(region, v1.opposite().facet()) || v1.opposite() == -1) {
                 border.push_back(v1);
                 ca[v1] = idGroup;
             }
+            std::cout << "c" << std::endl;
             if (!isElementInVector(region, v2.opposite().facet()) || v2.opposite() == -1) {
                 border.push_back(v2);
                 ca[v2] = idGroup;

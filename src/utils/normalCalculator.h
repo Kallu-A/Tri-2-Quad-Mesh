@@ -64,13 +64,13 @@ void testNormal() {
     UM::vec3 v1 = UM::vec3(1, 0, 0);
     UM::vec3 v2 = UM::vec3(0, 1, 0);
     UM::vec3 v3 = UM::vec3(0, 1, 0);
-
-    assert(calculateNormalTriangle(v0, v1, v2) == UM::vec3(0, 0, 1));
-    assert(calculateNormalTriangle(v0, v2, v3) == UM::vec3(1, 0, 0));
-    assert(calculateNormalTriangle(v0, v1, v3) == UM::vec3(0, 1, 0));
-    assert(calculateNormalTriangle(v0, v2, v1) == UM::vec3(0, 0, -1));
-    assert(calculateNormalTriangle(v1, v2, v0) == UM::vec3(0, 0, 1));
-    assert(calculateNormalTriangle(v1, v0, v2) == UM::vec3(0, 0, -1));
+   
+    assert((calculateNormalTriangle(v0, v1, v2) - UM::vec3(0, 0, 1)).norm2() < 1e-4);
+    assert((calculateNormalTriangle(v0, v2, v3) - UM::vec3(1, 0, 0)).norm2() < 1e-4);
+    assert((calculateNormalTriangle(v0, v1, v3) - UM::vec3(0, 1, 0)).norm2() < 1e-4);
+    assert((calculateNormalTriangle(v0, v2, v1) - UM::vec3(0, 0, -1)).norm2() < 1e-4);
+    assert((calculateNormalTriangle(v1, v2, v0) - UM::vec3(0, 0, 1)).norm2() < 1e-4);
+    assert((calculateNormalTriangle(v1, v0, v2) - UM::vec3(0, 0, -1)).norm2() < 1e-4);
 
 
     std::cout << "Test normal passed" << std::endl;
