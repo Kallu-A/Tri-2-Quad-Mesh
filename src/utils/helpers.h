@@ -33,8 +33,6 @@ std::string getExecutablePath() {
 
 #define NOMINMAX   
 #include <Windows.h>
-#include <iomanip>
-#include "../../../../../usr/include/c++/11/bits/fs_ops.h"
 std::string getExecutablePath() {
     char pBuf[256];
     size_t len = sizeof(pBuf);

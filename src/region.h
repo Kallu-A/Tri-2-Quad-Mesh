@@ -143,6 +143,7 @@ class Region {
     std::vector<int> getBorderHalfEdge(CornerAttribute<int> &ca) const {
         std::vector<int> border;
 
+        // TODO here it blocks in Windows Debug mode after 5 iter on mesh/quarterdisk_tri.mesh ! I don't know why...
         for (int i = 0; i < region.size(); i++) {
             //parcours les 3 voisin de chaque facet et ajouté au vecteur si il n'est pas déjà dans la region ou dans les voisins de la region
             auto f = Surface::Facet(triangle, region[i]);
@@ -151,6 +152,7 @@ class Region {
             auto v1 = f.halfedge(1);
             auto v2 = f.halfedge(2);
 
+            
             if (!isElementInVector(region, v0.opposite().facet()) || v0.opposite() == -1) {
                 border.push_back(v0);
                 ca[v0] = idGroup;

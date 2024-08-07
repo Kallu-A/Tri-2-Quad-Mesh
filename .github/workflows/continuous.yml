@@ -21,7 +21,7 @@ jobs:
       CXX: ${{ matrix.cfg.cxx }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -32,11 +32,11 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Run executable - entrypoint_exec
-        run: build/entrypoint_exec_${{ matrix.cfg.os }} path=mesh/quarterdisk_tri.mesh
+        run: build/entrypoint_exec_${{ matrix.cfg.os }}_addon path=mesh/quarterdisk_tri.mesh
 
       
       - name: Create archive
-        run: tar -czvf bunin_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }} build/lib/*
+        run: tar -czvf tri2quadmesh_${{ matrix.cfg.os }}.tar.gz build/entrypoint_exec_${{ matrix.cfg.os }}_addon build/lib/*
 
       -
         name: Deploy
@@ -44,7 +44,42 @@ jobs:
         with:
           tags: true
           draft: false
-          file: bunin_${{ matrix.cfg.os }}.tar.gz
-          overwrite: false
+          file: tri2quadmesh_${{ matrix.cfg.os }}.tar.gz
+          overwrite: true
           update_latest_release: true
           verbose: true
+
+  windows-msvc:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Configure CMake
+      run: cmake -B build -DOSName=win
+
+    - name: Release build
+      run: cmake --build build --parallel --config Release
+
+    - name: Release run
+      run: build/Release/entrypoint_exec_win_addon.exe path=mesh/quarterdisk_tri.mesh
+
+
+
+    - name: Debug build
+      run: cmake --build build --parallel --config Debug
+
+    # - name: Debug run - delete facet
+    #   run: build/Debug/entrypoint_exec_win_addon.exe path=mesh/quarterdisk_tri.mesh
+    -
+      name: Deploy
+      uses: xresloader/upload-to-github-release@v1
+      with:
+        tags: true
+        draft: false
+        file: build/Release/entrypoint_exec_win_addon.exe;
+        overwrite: true
+        update_latest_release: true
+        verbose: true

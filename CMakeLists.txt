@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.26)
 
-project(ultimailleBunin LANGUAGES C CXX )
+project(Tri2QuadMesh LANGUAGES C CXX )
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
@@ -20,8 +20,7 @@ include(FetchContent)
 FetchContent_Declare(
   ultimaille
   GIT_REPOSITORY https://github.com/ssloy/ultimaille
-  # GIT_TAG        v1.1.0
-  GIT_TAG        geom
+  GIT_TAG        v2.0.0
 )
 FetchContent_MakeAvailable(ultimaille)
 
@@ -29,7 +28,7 @@ FetchContent_MakeAvailable(ultimaille)
 FetchContent_Declare(
   param_parser
   GIT_REPOSITORY https://github.com/ultimaille/param-parser
-  GIT_TAG        v1.0.0
+  GIT_TAG        v1.0.4
 )
 FetchContent_MakeAvailable(param_parser)
 
@@ -55,7 +54,7 @@ endif()
 set_target_properties(
     entrypoint
         PROPERTIES
-            OUTPUT_NAME "entrypoint_exec_${OSName}"
+            OUTPUT_NAME "entrypoint_exec_${OSName}_addon"
 )
 
 

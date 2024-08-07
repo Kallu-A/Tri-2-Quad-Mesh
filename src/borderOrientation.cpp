@@ -68,6 +68,7 @@ class borderOrientation {
     void calculateIntersectionBorder(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAttribute<int> &pa, CornerAttribute<int> &ca, std::vector<Region> &regions, bool gifmode = false) {
         
         for (auto &region : regions) {
+
             std::vector<int> borderVertices = region.getBorderVertice(ca);
 
             for (int i = 0; i < borderVertices.size(); i++) {
@@ -85,8 +86,10 @@ class borderOrientation {
                 if (regionMeet.size() > 2) {
                     std::vector<int> listRegionMeet = std::vector<int>();
                     listRegionMeet = std::vector<int>(regionMeet.begin(), regionMeet.end());
+
                     std::string key = generatorKeyNameList(listRegionMeet);
                     intersectMapBorder[key] = borderVertices[i];
+
                     fillIntersect(key, borderVertices[i], triangle, fa);
                 }
             }
@@ -105,6 +108,7 @@ class borderOrientation {
         for (auto &region : regions) {
             int idGroup = region.getIdGroup();
             std::vector<int> borderHalfEdge = region.getBorderHalfEdge(ca);
+
             for (auto fId : borderHalfEdge) {
                 auto f = Surface::Halfedge(triangle, fId);
                  std::string key;

@@ -121,7 +121,7 @@ void transformQuad(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, Po
         //get the data from the intersectdatafolder to now which orientation to do 
         auto modeidBorder1  = getModeFromKey(intersect, border[0], std::to_string(region.getIdGroup()));
         int idGroup = region.getIdGroup();
-        if (modeidBorder1 == Mode::OUT) {
+        if (modeidBorder1 == Mode::OUTPUT) {
             int temp = idBorder1;
             idBorder1 = idBorder2;
             idBorder2 = temp;
@@ -191,17 +191,24 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
 
 
     borderOrientation borderOrientation;
+
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
+
     borderOrientation.calculateIntersectionBorder(triangle, quad, fa, pa, ca, regions, gifmode);
+
     std::map<std::string, int> idVerticeFromKey = std::map<std::string, int>();
     intersectIndex = regions.size();
+
     borderIndex = intersectIndex + borderOrientation.getMapIntersectBorder().size();
     quad.points.create_points(regions.size() + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
+
     for (auto &region : regions) {
         //continue;
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
     }
+
     quad.connect();
+    
     smoothFacet(quad);
 }
 

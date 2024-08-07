@@ -33,11 +33,15 @@ bool gifmode = false;
 
 int main(int argc, char* argv[]) {
     Parameters params;
-    params.add(Parameters::Type::String, "path", "").description("Path to the mest");
+    params.add(Parameters::Type::Input, "path", "").description("Path to the mest");
     params.add(Parameters::Type::Bool, "gif", "false").description("Create a gif of the process");
     params.add(Parameters::Type::Int, "n_region", "-414").description("Number of region to create");
     params.add(Parameters::Type::Double, "p_area", "-0.01").description("Percentage of the area to cover by region");
     params.init_from_args(argc, argv);
+
+    if (params.has_result_path()) {
+        resPath = params.result_path();
+    }
 
     std::cout << "Parameters: " << std::string(params["path"]) << " " << int(params["n_region"]) << " " << double(params["p_area"]) << std::endl;
 
