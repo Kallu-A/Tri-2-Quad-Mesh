@@ -191,24 +191,24 @@ void process(Triangles &triangle, Quads &quad, FacetAttribute<int> &fa, PointAtt
 
 
     borderOrientation borderOrientation;
-    std::cout << "Calculate border..." << std::endl;
+
     borderOrientation.calculateBorder(triangle, quad, fa, pa, ca, regions, gifmode);
-    std::cout << "Calculate section border..." << std::endl;
+
     borderOrientation.calculateIntersectionBorder(triangle, quad, fa, pa, ca, regions, gifmode);
-    std::cout << "Map<>..." << std::endl;
+
     std::map<std::string, int> idVerticeFromKey = std::map<std::string, int>();
     intersectIndex = regions.size();
-    std::cout << "Map intersection border..." << std::endl;
+
     borderIndex = intersectIndex + borderOrientation.getMapIntersectBorder().size();
     quad.points.create_points(regions.size() + borderOrientation.getMapIntersectBorder().size() + borderOrientation.getMapBorder().size());
-    std::cout << "Transform quads..." << std::endl;
+
     for (auto &region : regions) {
         //continue;
         transformQuad(triangle, quad, fa, pa, ca, region, borderOrientation, idVerticeFromKey, faQuad, gifmode);
     }
-    std::cout << "Connect..." << std::endl;
+
     quad.connect();
-    std::cout << "Smooth..." << std::endl;
+    
     smoothFacet(quad);
 }
 

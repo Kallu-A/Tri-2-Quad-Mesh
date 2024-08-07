@@ -71,8 +71,8 @@ jobs:
     - name: Debug build
       run: cmake --build build --parallel --config Debug
 
-    - name: Debug run - delete facet
-      run: build/Debug/entrypoint_exec_win_addon.exe path=mesh/quarterdisk_tri.mesh
+    # - name: Debug run - delete facet
+    #   run: build/Debug/entrypoint_exec_win_addon.exe path=mesh/quarterdisk_tri.mesh
     -
       name: Deploy
       uses: xresloader/upload-to-github-release@v1

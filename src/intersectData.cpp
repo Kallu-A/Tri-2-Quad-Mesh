@@ -53,33 +53,21 @@ void fillIntersect(std::string keyIntersect, int vertices, Triangles &triangle, 
     for (auto halfedge: verticesIntersect.iter_halfedges()) {
         processed++;
         auto f = Surface::Halfedge(triangle, halfedge);
-        std::cout << "regionfacet..." << std::endl;
         auto region = regionFacet[f.facet()];
-        std::cout << "regionfacet opp..." << std::endl;
 
         auto regionOposite = f.opposite().active() ? regionFacet[f.opposite().facet()] : borderOut;
         // if (f.opposite() == -1) {
-        std::cout << "activdo..." << std::endl;
 
         // if (!f.opposite().active()) {
         //     regionOposite = borderOut;
         // }
-        std::cout << "gen key..." << std::endl;
         
         std::string key = generateKey(region, regionOposite);
-        std::cout << "emplace..." << std::endl;
         
         intersectDataFolder.emplace(keyIntersect,std::vector<IntersectData>());
-        std::cout << "push..." << std::endl;
-    
         intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(region), Mode::OUTPUT));
-        std::cout << "push..." << std::endl;
-
         intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(regionOposite), Mode::INPUT));
-        std::cout << "posh..." << std::endl;
-
     }
-    std::cout << "isElementString..." << std::endl;
 
     // Case where the intersect has a border with void and so the halfedge doesn't exist
     if (isElementInString(keyIntersect, borderOut) == true) {
@@ -88,7 +76,6 @@ void fillIntersect(std::string keyIntersect, int vertices, Triangles &triangle, 
                 auto f = Surface::Halfedge(triangle, halfedge);
                 auto region = regionFacet[f.facet()];
                 auto regionOposite = borderOut;
-                std::cout << "generateKey..." << std::endl;
                 
                 std::string key = generateKey(region, regionOposite);
                 intersectDataFolder[keyIntersect].push_back(IntersectData(key, std::to_string(region), Mode::OUTPUT));
